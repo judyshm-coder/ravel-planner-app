@@ -9,7 +9,1092 @@
   <meta name="apple-mobile-web-app-title" content="WanderPlan">
   <title>WanderPlan 旅遊規劃</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="css/style.css">
+  <style>
+/* ── WanderPlan · Global Styles ──────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
+
+/* ── Design Tokens ───────────────────────────────────────────── */
+:root {
+  --cream:       #F7F3EE;
+  --cream2:      #EFE9E0;
+  --cream3:      #E5DDD2;
+  --cream4:      #D9CFC3;
+  --brown:       #8B6F52;
+  --brown-dark:  #5C4433;
+  --brown-light: #C4A882;
+  --brown-pale:  #D4C4B0;
+  --ink:         #2C1F14;
+  --ink2:        #6B5040;
+  --ink3:        #9E8270;
+  --white:       #FFFFFF;
+  --teal:        #4A8C7A;
+  --teal-light:  #E2F0EC;
+  --teal-border: #B8DDD6;
+  --amber:       #C8813A;
+  --amber-light: #FAF0E4;
+  --rose:        #C47070;
+  --rose-light:  #F5EAEA;
+  --sky:         #5080B8;
+  --sky-light:   #EAF0FA;
+  --navy:        #4060A0;
+  --navy-light:  #E8EEF8;
+  --green:       #3B6D11;
+  --green-light: #EAF3DE;
+  --r-sm:  8px;
+  --r-md:  12px;
+  --r-lg:  16px;
+  --r-xl:  22px;
+  --r-pill:9999px;
+  --shadow-sm: 0 1px 4px rgba(44,31,20,.06);
+  --shadow-md: 0 4px 16px rgba(44,31,20,.10);
+  --transition: .18s ease;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ── Reset ───────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  height: 100%;
+  overflow: hidden;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+button { font-family: inherit; border: none; cursor: pointer; background: none; }
+input, textarea, select { font-family: inherit; outline: none; }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+
+/* ── App Shell ───────────────────────────────────────────────── */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-width: 430px;
+  margin: 0 auto;
+  background: var(--cream);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Screen Routing ──────────────────────────────────────────── */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(24px);
+  transition: opacity var(--transition), transform var(--transition);
+  overflow: hidden;
+}
+.screen.active {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateX(0);
+}
+.screen.slide-left { transform: translateX(-24px); }
+
+/* ── Scroll Container ────────────────────────────────────────── */
+.scroll-body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+.scroll-body::-webkit-scrollbar { display: none; }
+
+/* ── Bottom Nav ──────────────────────────────────────────────── */
+#bottom-nav {
+  height: calc(60px + var(--safe-bottom));
+  padding-bottom: var(--safe-bottom);
+  background: var(--white);
+  border-top: 1px solid var(--cream3);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-shrink: 0;
+  z-index: 100;
+}
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex: 1;
+  cursor: pointer;
+  padding: 6px 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-icon { width: 24px; height: 24px; }
+.nav-label { font-size: 10px; color: var(--ink3); transition: color var(--transition); }
+.nav-item.active .nav-label { color: var(--brown); font-weight: 500; }
+.nav-item svg path, .nav-item svg rect, .nav-item svg circle { transition: all var(--transition); }
+
+/* ── Page Header ─────────────────────────────────────────────── */
+.page-header {
+  padding: 14px 20px 10px;
+  background: var(--cream);
+  flex-shrink: 0;
+}
+.page-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 26px;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.page-subtitle { font-size: 13px; color: var(--ink3); margin-top: 2px; }
+
+.sub-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px 8px;
+  flex-shrink: 0;
+}
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--ink3);
+  cursor: pointer;
+  padding: 4px 0;
+}
+.back-btn svg { width: 18px; height: 18px; }
+
+/* ── Cards ───────────────────────────────────────────────────── */
+.card {
+  background: var(--white);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--cream3);
+  overflow: hidden;
+}
+.card-body { padding: 12px 14px; }
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+.btn-primary {
+  width: 100%;
+  padding: 13px;
+  background: var(--brown);
+  color: var(--white);
+  border-radius: var(--r-md);
+  font-size: 15px;
+  font-weight: 500;
+  font-family: 'DM Serif Display', serif;
+  letter-spacing: .02em;
+  text-align: center;
+  cursor: pointer;
+  transition: background var(--transition), transform var(--transition);
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-primary:active { background: var(--brown-dark); transform: scale(.98); }
+
+.btn-secondary {
+  width: 100%;
+  padding: 11px;
+  background: transparent;
+  color: var(--ink2);
+  border: 1px solid var(--cream3);
+  border-radius: var(--r-md);
+  font-size: 14px;
+  cursor: pointer;
+}
+.btn-ghost {
+  padding: 6px 14px;
+  background: var(--cream2);
+  color: var(--ink2);
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* ── Form Elements ───────────────────────────────────────────── */
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--ink3);
+}
+.form-input {
+  background: var(--white);
+  border: 1px solid var(--cream3);
+  border-radius: var(--r-md);
+  padding: 10px 13px;
+  font-size: 14px;
+  color: var(--ink);
+  transition: border-color var(--transition);
+  width: 100%;
+}
+.form-input:focus { border-color: var(--brown); }
+.form-input::placeholder { color: var(--ink3); }
+textarea.form-input { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+/* ── Pill / Tag ──────────────────────────────────────────────── */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  font-size: 11px;
+  font-weight: 500;
+}
+.pill-brown { background: var(--amber-light); color: var(--amber); }
+.pill-teal  { background: var(--teal-light);  color: var(--teal); }
+.pill-rose  { background: var(--rose-light);  color: var(--rose); }
+.pill-sky   { background: var(--sky-light);   color: var(--sky); }
+.pill-navy  { background: var(--navy-light);  color: var(--navy); }
+.pill-green { background: var(--green-light); color: var(--green); }
+
+/* ── Category colours ────────────────────────────────────────── */
+.cat-attraction { color: var(--amber); }
+.cat-restaurant  { color: var(--rose); }
+.cat-hotel       { color: var(--teal); }
+.cat-transport   { color: var(--sky); }
+.cat-shopping    { color: #9070C0; }
+.cat-activity    { color: var(--green); }
+
+/* ── Toast ───────────────────────────────────────────────────── */
+#toast {
+  position: fixed;
+  bottom: calc(80px + var(--safe-bottom));
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  background: var(--ink);
+  color: var(--white);
+  font-size: 13px;
+  padding: 9px 18px;
+  border-radius: var(--r-pill);
+  opacity: 0;
+  transition: opacity .25s, transform .25s;
+  pointer-events: none;
+  z-index: 9999;
+  white-space: nowrap;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── Modal Overlay ───────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(44,31,20,.45);
+  z-index: 500;
+  display: flex;
+  align-items: flex-end;
+  opacity: 0;
+  transition: opacity .22s;
+  pointer-events: none;
+}
+.modal-overlay.show { opacity: 1; pointer-events: all; }
+.modal-sheet {
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  background: var(--white);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  transform: translateY(100%);
+  transition: transform .28s cubic-bezier(.32,1,.23,1);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding-bottom: calc(20px + var(--safe-bottom));
+}
+.modal-overlay.show .modal-sheet { transform: translateY(0); }
+.modal-handle {
+  width: 40px; height: 4px;
+  background: var(--cream3);
+  border-radius: 2px;
+  margin: 12px auto 8px;
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 20px 12px;
+}
+.modal-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 20px;
+  color: var(--ink);
+}
+.modal-close {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--cream2);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 16px; color: var(--ink3);
+}
+
+/* ── Loading ─────────────────────────────────────────────────── */
+.spinner {
+  width: 24px; height: 24px;
+  border: 2.5px solid var(--cream3);
+  border-top-color: var(--brown);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ──────────────────────────────────────────────────────────────
+   SCREEN: RECOMMEND
+────────────────────────────────────────────────────────────── */
+.country-filter {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 20px 12px;
+  flex-shrink: 0;
+}
+.country-filter::-webkit-scrollbar { display: none; }
+.country-chip {
+  padding: 6px 14px;
+  border-radius: var(--r-pill);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  border: 1px solid var(--cream3);
+  background: var(--white);
+  color: var(--ink3);
+  cursor: pointer;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.country-chip.active {
+  background: var(--brown);
+  color: var(--white);
+  border-color: var(--brown);
+}
+.rec-cards { padding: 0 20px; display: flex; flex-direction: column; gap: 12px; }
+.rec-card {
+  background: var(--white);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--cream3);
+  overflow: hidden;
+  display: flex;
+  cursor: pointer;
+  transition: box-shadow var(--transition);
+}
+.rec-card:active { box-shadow: var(--shadow-md); }
+.rec-thumb {
+  width: 90px;
+  flex-shrink: 0;
+  min-height: 90px;
+  background: var(--cream2);
+  background-size: cover;
+  background-position: center;
+}
+.rec-info { padding: 11px 13px; flex: 1; min-width: 0; }
+.rec-source { font-size: 10px; color: var(--ink3); margin-bottom: 4px; }
+.rec-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.35;
+  margin-bottom: 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.rec-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+.rec-tag {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  background: var(--amber-light);
+  color: var(--amber);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   SCREEN: TRIPS LIST
+────────────────────────────────────────────────────────────── */
+.trips-list { padding: 10px 20px; display: flex; flex-direction: column; gap: 14px; }
+.trip-card {
+  background: var(--white);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--cream3);
+  overflow: hidden;
+  cursor: pointer;
+  transition: box-shadow var(--transition), transform var(--transition);
+  -webkit-tap-highlight-color: transparent;
+}
+.trip-card:active { transform: scale(.99); box-shadow: var(--shadow-md); }
+.trip-cover {
+  height: 110px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2px;
+  background: var(--cream3);
+  position: relative;
+  overflow: hidden;
+}
+.trip-cover-img {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+.trip-cover-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(44,31,20,.6) 0%, transparent 55%);
+}
+.trip-cover-text {
+  position: absolute;
+  bottom: 10px;
+  left: 14px;
+  right: 14px;
+}
+.trip-cover-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 16px;
+  color: var(--white);
+  line-height: 1.2;
+}
+.trip-cover-date { font-size: 11px; color: rgba(255,255,255,.8); margin-top: 2px; }
+.trip-footer {
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.trip-progress-bar {
+  flex: 1;
+  height: 3px;
+  background: var(--cream3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.trip-progress-fill {
+  height: 100%;
+  background: var(--brown);
+  border-radius: 2px;
+  transition: width .4s ease;
+}
+.trip-days-label { font-size: 11px; color: var(--ink3); white-space: nowrap; }
+.trip-arrow { width: 16px; height: 16px; flex-shrink: 0; }
+.empty-state {
+  text-align: center;
+  padding: 60px 30px;
+  color: var(--ink3);
+}
+.empty-state-icon { font-size: 48px; margin-bottom: 16px; }
+.empty-state-text { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--ink2); margin-bottom: 8px; }
+.empty-state-sub { font-size: 14px; line-height: 1.6; }
+
+/* ──────────────────────────────────────────────────────────────
+   SCREEN: ADD PLAN
+────────────────────────────────────────────────────────────── */
+.add-form-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 18px; }
+.date-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.date-box {
+  background: var(--white);
+  border: 1px solid var(--cream3);
+  border-radius: var(--r-md);
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: border-color var(--transition);
+}
+.date-box:focus-within { border-color: var(--brown); }
+.date-box-label { font-size: 10px; text-transform: uppercase; letter-spacing: .07em; color: var(--ink3); margin-bottom: 3px; }
+.date-box-val { font-size: 14px; font-weight: 500; color: var(--ink); }
+.date-box-val.placeholder { color: var(--ink3); font-weight: 400; }
+
+/* Destination multi-select */
+.dest-control {
+  background: var(--white);
+  border: 1px solid var(--cream3);
+  border-radius: var(--r-md);
+  padding: 8px 12px;
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  transition: border-color var(--transition);
+}
+.dest-control.open { border-color: var(--brown); }
+.dest-tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--amber-light);
+  color: var(--amber);
+  border-radius: var(--r-pill);
+  padding: 3px 9px;
+  font-size: 11px;
+  font-weight: 500;
+}
+.dest-tag-pill .remove {
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+  margin-left: 2px;
+  opacity: .7;
+}
+.dest-placeholder { font-size: 13px; color: var(--ink3); }
+.dest-dropdown {
+  background: var(--white);
+  border: 1px solid var(--cream3);
+  border-radius: var(--r-md);
+  padding: 12px;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+.dest-dropdown.open { display: flex; }
+.dest-search {
+  background: var(--cream2);
+  border: none;
+  border-radius: var(--r-sm);
+  padding: 8px 12px;
+  font-size: 13px;
+  width: 100%;
+  color: var(--ink);
+}
+.dest-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
+.dest-option {
+  border-radius: var(--r-sm);
+  padding: 8px 4px 6px;
+  border: 1.5px solid var(--cream3);
+  background: var(--cream);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.dest-option.selected { border-color: var(--brown); background: var(--amber-light); }
+.dest-flag { font-size: 20px; line-height: 1; }
+.dest-name { font-size: 10px; color: var(--ink2); text-align: center; }
+
+/* Cover upload */
+.cover-upload {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.cover-btn {
+  width: 60px; height: 60px;
+  border-radius: var(--r-md);
+  border: 2px dashed var(--brown-light);
+  background: var(--cream2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: border-color var(--transition);
+}
+.cover-btn:hover { border-color: var(--brown); }
+.cover-btn img { width: 100%; height: 100%; object-fit: cover; }
+.cover-hint { font-size: 12px; color: var(--ink3); line-height: 1.6; }
+
+/* ──────────────────────────────────────────────────────────────
+   SCREEN: EDITOR (day timeline)
+────────────────────────────────────────────────────────────── */
+.editor-header {
+  padding: 12px 20px 0;
+  flex-shrink: 0;
+  background: var(--cream);
+}
+.editor-trip-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+.editor-trip-meta { font-size: 12px; color: var(--ink3); margin-bottom: 10px; }
+
+.day-tabs-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow-x: auto;
+  padding: 0 20px 10px;
+  flex-shrink: 0;
+}
+.day-tabs-wrap::-webkit-scrollbar { display: none; }
+.day-tab {
+  padding: 6px 14px;
+  border-radius: var(--r-pill);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  border: 1px solid var(--cream3);
+  background: var(--white);
+  color: var(--ink3);
+  cursor: pointer;
+  margin-right: 6px;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.day-tab.active {
+  background: var(--brown);
+  color: var(--white);
+  border-color: var(--brown);
+}
+.day-tab.add-day {
+  border-style: dashed;
+  color: var(--brown);
+  background: transparent;
+}
+
+/* Timeline */
+.timeline { padding: 6px 20px 16px; display: flex; flex-direction: column; }
+.tl-item { display: flex; gap: 10px; }
+.tl-time-col {
+  width: 40px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding-top: 4px;
+}
+.tl-time { font-size: 10px; font-weight: 500; color: var(--ink3); line-height: 1; }
+.tl-spine-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 20px;
+  flex-shrink: 0;
+}
+.tl-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  border: 2.5px solid var(--brown);
+  background: var(--white);
+  flex-shrink: 0;
+  z-index: 1;
+  margin-top: 2px;
+}
+.tl-dot.filled { background: var(--brown); }
+.tl-line {
+  width: 2px;
+  flex: 1;
+  background: var(--cream3);
+  min-height: 12px;
+}
+.tl-content-col { flex: 1; padding-bottom: 8px; min-width: 0; }
+
+/* Event Card in timeline */
+.ev-card {
+  background: var(--white);
+  border-radius: var(--r-md);
+  border: 1px solid var(--cream3);
+  overflow: hidden;
+  margin-bottom: 2px;
+}
+.ev-thumb {
+  height: 72px;
+  background: var(--cream2);
+  background-size: cover;
+  background-position: center;
+}
+.ev-body { padding: 9px 11px; }
+.ev-category {
+  font-size: 9px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  margin-bottom: 3px;
+}
+.ev-title-text {
+  font-family: 'DM Serif Display', serif;
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.3;
+  margin-bottom: 3px;
+}
+.ev-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--ink3);
+  flex-wrap: wrap;
+}
+.ev-meta-item { display: flex; align-items: center; gap: 3px; }
+.ev-meta-item svg { width: 10px; height: 10px; flex-shrink: 0; }
+.ev-actions {
+  display: flex;
+  gap: 6px;
+  padding: 6px 11px;
+  border-top: 1px solid var(--cream3);
+  flex-wrap: wrap;
+}
+.ev-action-btn {
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: var(--r-sm);
+  background: var(--cream2);
+  color: var(--ink2);
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.ev-action-btn:active { background: var(--cream3); }
+.ev-drag-handle {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 11px;
+  border-top: 1px solid var(--cream3);
+  align-items: center;
+  cursor: grab;
+  touch-action: none;
+}
+.ev-drag-handle:active { cursor: grabbing; }
+.drag-bar { width: 24px; height: 2px; background: var(--cream4); border-radius: 1px; }
+.ev-card.dragging { opacity: .5; border: 1.5px dashed var(--brown); }
+.ev-card.drag-over { border-color: var(--brown); background: var(--amber-light); }
+
+/* Transport node between events */
+.transport-node {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+.transport-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: var(--r-pill);
+  padding: 4px 11px;
+  font-size: 10px;
+  font-weight: 500;
+  border: 1px solid;
+  cursor: pointer;
+  transition: opacity var(--transition);
+}
+.transport-badge:active { opacity: .7; }
+.tb-walk   { background: var(--cream2);  color: var(--ink2);  border-color: var(--cream3); }
+.tb-rail   { background: var(--teal-light);  color: var(--teal);  border-color: var(--teal-border); }
+.tb-bus    { background: var(--sky-light);   color: var(--sky);   border-color: #C0D0E8; }
+.tb-air    { background: var(--rose-light);  color: var(--rose);  border-color: #E0C0C0; }
+.tb-ferry  { background: var(--navy-light);  color: var(--navy);  border-color: #C0CCDC; }
+.tb-taxi   { background: var(--green-light); color: var(--green); border-color: #B8D8A0; }
+.tb-unset  { background: transparent; color: var(--brown); border-style: dashed; border-color: var(--brown-light); }
+.transport-dur { font-size: 10px; color: var(--ink3); }
+
+/* Add event row */
+.add-ev-row {
+  display: flex;
+  padding: 8px 0 4px 68px;
+}
+.add-ev-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--white);
+  border: 1.5px dashed var(--brown-light);
+  border-radius: var(--r-md);
+  padding: 8px 16px;
+  font-size: 12px;
+  color: var(--brown);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.add-ev-btn:active { background: var(--amber-light); }
+
+/* Conflict warning */
+.conflict-warning {
+  background: #FFF3E0;
+  border: 1px solid #FFB74D;
+  border-radius: var(--r-sm);
+  padding: 6px 10px;
+  font-size: 11px;
+  color: #E65100;
+  margin-bottom: 6px;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   MODAL: EVENT DETAIL
+────────────────────────────────────────────────────────────── */
+.ev-detail-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--cream3);
+  padding: 0 20px;
+  gap: 0;
+  flex-shrink: 0;
+}
+.ev-detail-tab {
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink3);
+  border-bottom: 2.5px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.ev-detail-tab.active { color: var(--brown); border-bottom-color: var(--brown); }
+.ev-detail-panel { padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; }
+.ev-detail-panel.hidden { display: none; }
+
+.time-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.time-box {
+  background: var(--white);
+  border: 1px solid var(--cream3);
+  border-radius: var(--r-md);
+  padding: 10px 12px;
+}
+.time-box-label { font-size: 10px; text-transform: uppercase; letter-spacing: .07em; color: var(--ink3); margin-bottom: 4px; }
+.time-box input {
+  width: 100%;
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink);
+  background: transparent;
+}
+
+.addr-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.addr-input-wrap { flex: 1; }
+.map-btn {
+  padding: 9px 13px;
+  background: var(--teal-light);
+  color: var(--teal);
+  border-radius: var(--r-md);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.photo-strip-wrap { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+.photo-strip-wrap::-webkit-scrollbar { display: none; }
+.photo-thumb-ev {
+  width: 70px; height: 70px;
+  border-radius: var(--r-md);
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.photo-thumb-ev .photo-del {
+  position: absolute;
+  top: 4px; right: 4px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: rgba(44,31,20,.6);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 10px; color: #fff;
+}
+.photo-add-btn {
+  width: 70px; height: 70px;
+  border-radius: var(--r-md);
+  border: 2px dashed var(--brown-light);
+  background: var(--cream2);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 10px; color: var(--ink3);
+}
+.mini-map {
+  border-radius: var(--r-md);
+  height: 100px;
+  background: var(--cream3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+}
+.mini-map-label {
+  position: absolute;
+  bottom: 8px; right: 10px;
+  background: rgba(255,255,255,.85);
+  border-radius: var(--r-sm);
+  padding: 3px 9px;
+  font-size: 10px;
+  color: var(--teal);
+  font-weight: 500;
+}
+.link-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--white);
+  border: 1px solid var(--cream3);
+  border-radius: var(--r-md);
+  padding: 9px 12px;
+}
+.link-item-url { flex: 1; font-size: 12px; color: var(--teal); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.link-del { color: var(--ink3); font-size: 14px; cursor: pointer; }
+
+/* ──────────────────────────────────────────────────────────────
+   MODAL: TRANSPORT PICKER
+────────────────────────────────────────────────────────────── */
+.transport-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 0 20px 16px;
+}
+.tm-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  border-radius: var(--r-md);
+  border: 1.5px solid var(--cream3);
+  background: var(--white);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.tm-btn.active { border-width: 2px; }
+.tm-btn.active.walk  { border-color: var(--brown);  background: var(--amber-light); }
+.tm-btn.active.rail  { border-color: var(--teal);   background: var(--teal-light); }
+.tm-btn.active.bus   { border-color: var(--sky);    background: var(--sky-light); }
+.tm-btn.active.air   { border-color: var(--rose);   background: var(--rose-light); }
+.tm-btn.active.ferry { border-color: var(--navy);   background: var(--navy-light); }
+.tm-btn.active.taxi  { border-color: var(--green);  background: var(--green-light); }
+.tm-icon {
+  width: 42px; height: 42px;
+  border-radius: var(--r-md);
+  display: flex; align-items: center; justify-content: center;
+}
+.tm-label { font-size: 11px; font-weight: 500; color: var(--ink2); }
+.transport-detail-box {
+  margin: 0 20px 16px;
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+  border: 1px solid;
+}
+.transport-detail-box.rail  { background: var(--teal-light);  border-color: var(--teal-border); }
+.transport-detail-box.walk  { background: var(--cream2);      border-color: var(--cream3); }
+.transport-detail-box.bus   { background: var(--sky-light);   border-color: #C0D0E8; }
+.transport-detail-box.air   { background: var(--rose-light);  border-color: #E0C0C0; }
+.transport-detail-box.ferry { background: var(--navy-light);  border-color: #C0CCDC; }
+.transport-detail-box.taxi  { background: var(--green-light); border-color: #B8D8A0; }
+.tr-detail-title { font-size: 11px; font-weight: 500; margin-bottom: 10px; }
+.tr-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.tr-field { display: flex; flex-direction: column; gap: 4px; }
+.tr-field-label { font-size: 10px; text-transform: uppercase; letter-spacing: .07em; color: var(--ink3); }
+.tr-field input {
+  background: rgba(255,255,255,.7);
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: var(--r-sm);
+  padding: 7px 10px;
+  font-size: 13px;
+  color: var(--ink);
+  width: 100%;
+}
+.tr-maps-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: rgba(255,255,255,.6);
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  color: var(--teal);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   SCREEN: PROFILE
+────────────────────────────────────────────────────────────── */
+.profile-hero {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.avatar-circle {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: var(--brown);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px;
+  color: var(--white);
+  flex-shrink: 0;
+}
+.profile-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 20px;
+  color: var(--ink);
+}
+.profile-email { font-size: 12px; color: var(--ink3); }
+.settings-section { padding: 0 20px 16px; }
+.settings-section-label {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--ink3);
+  padding: 12px 0 6px;
+}
+.settings-group {
+  background: var(--white);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.settings-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: background var(--transition);
+  border-bottom: 1px solid var(--cream3);
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-row:active { background: var(--cream2); }
+.settings-icon {
+  width: 32px; height: 32px;
+  border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.settings-text { flex: 1; font-size: 13px; color: var(--ink2); }
+.settings-right { font-size: 12px; color: var(--ink3); }
+.toggle-switch {
+  width: 36px; height: 20px;
+  border-radius: 10px;
+  background: var(--cream3);
+  position: relative;
+  cursor: pointer;
+  transition: background .2s;
+  flex-shrink: 0;
+}
+.toggle-switch.on { background: var(--teal); }
+.toggle-knob {
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--white);
+  transition: transform .2s;
+}
+.toggle-switch.on .toggle-knob { transform: translateX(16px); }
+
+</style>
 </head>
 <body>
 
@@ -362,14 +1447,1446 @@
 <div id="toast"></div>
 
 <!-- ── Scripts ── -->
-<script src="js/db.js"></script>
-<script>window.Views = {};</script>
-<script src="js/views/home.js"></script>
-<script src="js/views/trips.js"></script>
-<script src="js/views/editor.js"></script>
-<script src="js/components/event-detail.js"></script>
-<script src="js/views/profile.js"></script>
-<script src="js/app.js"></script>
 
+
+<script>
+'use strict';
+// ── Globals ──
+window.Views = {};
+
+// ── DB ──
+// ── WanderPlan DB Layer ──────────────────────────────────────────
+// Normalised localStorage schema:
+//   meta:index          → TripPlan[] (summaries)
+//   tp:{id}             → TripPlan (full)
+//   tp:{id}:days        → DayPlan[]
+//   tp:{id}:events      → Event[]
+//   tp:{id}:transports  → Transport[]
+
+const DB = (() => {
+  const PREFIX = 'wp_';
+  const get = k => { try { return JSON.parse(localStorage.getItem(PREFIX + k)); } catch { return null; } };
+  const set = (k, v) => { try { localStorage.setItem(PREFIX + k, JSON.stringify(v)); return true; } catch { return false; } };
+  const del = k => localStorage.removeItem(PREFIX + k);
+
+  // ── Helpers ──────────────────────────────────────────────────
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  const now = () => new Date().toISOString();
+
+  // ── Index (trip list) ────────────────────────────────────────
+  function getIndex() { return get('meta:index') || []; }
+  function saveIndex(idx) { return set('meta:index', idx); }
+  function addToIndex(summary) {
+    const idx = getIndex();
+    idx.unshift(summary);
+    saveIndex(idx);
+  }
+  function updateIndex(id, patch) {
+    const idx = getIndex().map(t => t.id === id ? { ...t, ...patch } : t);
+    saveIndex(idx);
+  }
+  function removeFromIndex(id) { saveIndex(getIndex().filter(t => t.id !== id)); }
+
+  // ── TripPlan ─────────────────────────────────────────────────
+  function createTrip({ name, startDate, endDate, destinations = [], coverImage = null }) {
+    const id = uid();
+    const trip = { id, name, startDate, endDate, destinations, coverImage, createdAt: now(), updatedAt: now(), calendarSyncId: null };
+    set(`tp:${id}`, trip);
+    // Scaffold DayPlan array
+    const days = buildDayPlans(id, startDate, endDate);
+    set(`tp:${id}:days`, days);
+    set(`tp:${id}:events`, []);
+    set(`tp:${id}:transports`, []);
+    addToIndex({ id, name, startDate, endDate, destinations, coverImage, dayCount: days.length, eventCount: 0 });
+    return trip;
+  }
+
+  function buildDayPlans(tripId, startDate, endDate) {
+    const days = [];
+    let cur = new Date(startDate);
+    const end = new Date(endDate);
+    let i = 1;
+    while (cur <= end) {
+      days.push({ id: uid(), tripId, date: cur.toISOString().slice(0, 10), dayNumber: i++, note: '' });
+      cur.setDate(cur.getDate() + 1);
+    }
+    return days;
+  }
+
+  function getTrip(id) { return get(`tp:${id}`); }
+  function updateTrip(id, patch) {
+    const trip = { ...getTrip(id), ...patch, updatedAt: now() };
+    set(`tp:${id}`, trip);
+    updateIndex(id, { name: trip.name, startDate: trip.startDate, endDate: trip.endDate, destinations: trip.destinations, coverImage: trip.coverImage });
+    return trip;
+  }
+  function deleteTrip(id) {
+    del(`tp:${id}`); del(`tp:${id}:days`); del(`tp:${id}:events`); del(`tp:${id}:transports`);
+    removeFromIndex(id);
+  }
+
+  // ── DayPlan ──────────────────────────────────────────────────
+  function getDays(tripId) { return get(`tp:${tripId}:days`) || []; }
+  function updateDayNote(tripId, dayId, note) {
+    const days = getDays(tripId).map(d => d.id === dayId ? { ...d, note } : d);
+    set(`tp:${tripId}:days`, days);
+  }
+
+  // ── Events ───────────────────────────────────────────────────
+  function getEvents(tripId) { return get(`tp:${tripId}:events`) || []; }
+  function getEventsByDay(tripId, dayId) {
+    return getEvents(tripId).filter(e => e.dayId === dayId).sort((a, b) => {
+      if (a.startTime && b.startTime) return a.startTime.localeCompare(b.startTime);
+      return a.sortOrder - b.sortOrder;
+    });
+  }
+  function createEvent(tripId, dayId, data) {
+    const events = getEvents(tripId);
+    const dayEvents = events.filter(e => e.dayId === dayId);
+    const ev = {
+      id: uid(), tripId, dayId, createdAt: now(),
+      title: '', startTime: '', endTime: '', description: '',
+      images: [], links: [], address: '', googleMapsUrl: '', lat: null, lng: null,
+      category: 'attraction', status: 'planned', tags: [], sortOrder: dayEvents.length,
+      ...data
+    };
+    events.push(ev);
+    set(`tp:${tripId}:events`, events);
+    // Update cover from first image if trip has none
+    syncTripCover(tripId, ev);
+    refreshIndexEventCount(tripId, events);
+    return ev;
+  }
+  function updateEvent(tripId, eventId, patch) {
+    const events = getEvents(tripId).map(e => e.id === eventId ? { ...e, ...patch } : e);
+    set(`tp:${tripId}:events`, events);
+    const updated = events.find(e => e.id === eventId);
+    syncTripCover(tripId, updated);
+    refreshIndexEventCount(tripId, events);
+    return updated;
+  }
+  function deleteEvent(tripId, eventId) {
+    const events = getEvents(tripId).filter(e => e.id !== eventId);
+    set(`tp:${tripId}:events`, events);
+    // Also remove transports referencing this event
+    const transports = getTransports(tripId).filter(t => t.fromEventId !== eventId && t.toEventId !== eventId);
+    set(`tp:${tripId}:transports`, transports);
+    refreshIndexEventCount(tripId, events);
+  }
+  function reorderEvents(tripId, dayId, orderedIds) {
+    const events = getEvents(tripId).map(e => {
+      if (e.dayId !== dayId) return e;
+      const idx = orderedIds.indexOf(e.id);
+      return idx === -1 ? e : { ...e, sortOrder: idx };
+    });
+    set(`tp:${tripId}:events`, events);
+  }
+
+  function syncTripCover(tripId, ev) {
+    const trip = getTrip(tripId);
+    if (!trip.coverImage && ev && ev.images && ev.images.length > 0) {
+      updateTrip(tripId, { coverImage: ev.images[0] });
+    }
+  }
+  function refreshIndexEventCount(tripId, events) {
+    updateIndex(tripId, { eventCount: events.length });
+  }
+
+  // Conflict detection
+  function checkConflict(tripId, dayId, startTime, endTime, excludeId = null) {
+    return getEventsByDay(tripId, dayId).filter(e => {
+      if (e.id === excludeId || !e.startTime || !e.endTime || !startTime || !endTime) return false;
+      return e.startTime < endTime && e.endTime > startTime;
+    });
+  }
+
+  // ── Transports ───────────────────────────────────────────────
+  function getTransports(tripId) { return get(`tp:${tripId}:transports`) || []; }
+  function getTransport(tripId, fromEventId) {
+    return getTransports(tripId).find(t => t.fromEventId === fromEventId) || null;
+  }
+  function upsertTransport(tripId, data) {
+    let transports = getTransports(tripId);
+    const existing = transports.findIndex(t => t.fromEventId === data.fromEventId);
+    const tr = { id: uid(), durationMin: 0, distanceKm: null, ticketUrl: '', ticketInfo: '', cost: null, currency: 'JPY', bookingStatus: 'none', ...data };
+    if (existing >= 0) transports[existing] = { ...transports[existing], ...data };
+    else transports.push(tr);
+    set(`tp:${tripId}:transports`, transports);
+    return tr;
+  }
+  function deleteTransport(tripId, fromEventId) {
+    set(`tp:${tripId}:transports`, getTransports(tripId).filter(t => t.fromEventId !== fromEventId));
+  }
+
+  // ── Export / Import ──────────────────────────────────────────
+  function exportTrip(tripId) {
+    return {
+      version: '1.0',
+      exportedAt: now(),
+      trip: getTrip(tripId),
+      days: getDays(tripId),
+      events: getEvents(tripId),
+      transports: getTransports(tripId)
+    };
+  }
+  function exportAll() {
+    return { version: '1.0', exportedAt: now(), trips: getIndex().map(t => exportTrip(t.id)) };
+  }
+  function importTrip(data) {
+    if (!data.trip) throw new Error('Invalid format');
+    const { trip, days, events, transports } = data;
+    // Assign new id to avoid collision
+    const newId = uid();
+    const idMap = { [trip.id]: newId };
+    const remap = id => idMap[id] || id;
+    const newTrip = { ...trip, id: newId, name: trip.name + ' (匯入)', createdAt: now(), updatedAt: now() };
+    set(`tp:${newId}`, newTrip);
+    const newDays = (days || []).map(d => { const nd = { ...d, id: uid(), tripId: newId }; idMap[d.id] = nd.id; return nd; });
+    set(`tp:${newId}:days`, newDays);
+    const newEvents = (events || []).map(e => { const ne = { ...e, id: uid(), tripId: newId, dayId: remap(e.dayId) }; idMap[e.id] = ne.id; return ne; });
+    set(`tp:${newId}:events`, newEvents);
+    const newTransports = (transports || []).map(t => ({ ...t, id: uid(), tripId: newId, fromEventId: remap(t.fromEventId), toEventId: remap(t.toEventId) }));
+    set(`tp:${newId}:transports`, newTransports);
+    addToIndex({ id: newId, name: newTrip.name, startDate: newTrip.startDate, endDate: newTrip.endDate, destinations: newTrip.destinations, coverImage: newTrip.coverImage, dayCount: newDays.length, eventCount: newEvents.length });
+    return newTrip;
+  }
+
+  // ── ICS / Calendar Export ────────────────────────────────────
+  function generateICS(tripId) {
+    const events = getEvents(tripId);
+    const trip = getTrip(tripId);
+    const fmtDT = (date, time) => {
+      const d = date.replace(/-/g, '');
+      if (!time) return `${d}`;
+      const t = time.replace(':', '') + '00';
+      return `${d}T${t}00`;
+    };
+    const lines = [
+      'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//WanderPlan//TW',
+      `X-WR-CALNAME:${trip.name}`, 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH'
+    ];
+    events.forEach(ev => {
+      const day = (getDays(tripId).find(d => d.id === ev.dayId) || {}).date || trip.startDate;
+      lines.push('BEGIN:VEVENT');
+      lines.push(`UID:${ev.id}@wanderplan`);
+      lines.push(`SUMMARY:${ev.title || '（未命名行程）'}`);
+      lines.push(`DTSTART:${fmtDT(day, ev.startTime)}`);
+      lines.push(`DTEND:${fmtDT(day, ev.endTime || ev.startTime)}`);
+      if (ev.description) lines.push(`DESCRIPTION:${ev.description.replace(/\n/g, '\\n')}`);
+      if (ev.address) lines.push(`LOCATION:${ev.address}`);
+      lines.push('END:VEVENT');
+    });
+    lines.push('END:VCALENDAR');
+    return lines.join('\r\n');
+  }
+
+  return {
+    uid, now,
+    getIndex, createTrip, getTrip, updateTrip, deleteTrip,
+    getDays, updateDayNote,
+    getEvents, getEventsByDay, createEvent, updateEvent, deleteEvent, reorderEvents, checkConflict,
+    getTransports, getTransport, upsertTransport, deleteTransport,
+    exportTrip, exportAll, importTrip, generateICS
+  };
+})();
+
+window.DB = DB;
+
+
+// ── Views: Recommend ──
+// ── Views.Recommend ──────────────────────────────────────────────
+var COUNTRIES = [
+  { code: 'JP', flag: '🇯🇵', name: '日本' },
+  { code: 'KR', flag: '🇰🇷', name: '韓國' },
+  { code: 'TH', flag: '🇹🇭', name: '泰國' },
+  { code: 'IT', flag: '🇮🇹', name: '義大利' },
+  { code: 'FR', flag: '🇫🇷', name: '法國' },
+  { code: 'GB', flag: '🇬🇧', name: '英國' },
+  { code: 'US', flag: '🇺🇸', name: '美國' },
+  { code: 'VN', flag: '🇻🇳', name: '越南' },
+  { code: 'SG', flag: '🇸🇬', name: '新加坡' },
+];
+window.COUNTRIES = COUNTRIES;
+
+var SAMPLE_ARTICLES = {
+  JP: [
+    { title: '大阪春季必去！道頓堀夜景完整攻略', source: 'MATCHA · 2025.03', tags: ['大阪','夜景','美食'], color: 'linear-gradient(135deg,#D4956A,#8C5E3A)', url: 'https://matcha-jp.com' },
+    { title: '京都嵐山超私房5條散步路線', source: '痞客邦 · 2025.02', tags: ['京都','散步','嵐山'], color: 'linear-gradient(135deg,#A8C4B4,#5C8870)', url: 'https://www.pixnet.net' },
+    { title: '東京 2025 最新開幕景點與主題樂園', source: 'Travel.tw · 2025.03', tags: ['東京','新開幕'], color: 'linear-gradient(135deg,#C4A0B8,#7A5870)', url: '#' },
+    { title: '北海道溫泉旅館完全指南：絕景 × 美食', source: '旅行酒吧 · 2025.01', tags: ['北海道','溫泉'], color: 'linear-gradient(135deg,#A0B4C8,#5C7888)', url: '#' },
+    { title: '奈良一日遊：鹿、神社、柿葉壽司', source: 'KLOOK Blog · 2025.02', tags: ['奈良','一日遊'], color: 'linear-gradient(135deg,#C4B888,#887840)', url: '#' },
+  ],
+  KR: [
+    { title: '首爾聖水洞咖啡地圖：2025 最新整理', source: 'IG Travel · 2025.03', tags: ['首爾','咖啡','聖水洞'], color: 'linear-gradient(135deg,#C8A8B8,#886878)', url: '#' },
+    { title: '釜山海雲台、甘川洞文化村一日路線', source: '旅行分享家 · 2025.02', tags: ['釜山','文化村'], color: 'linear-gradient(135deg,#90B0C8,#405870)', url: '#' },
+    { title: '濟州島自駕 3 天 2 夜完整行程規劃', source: 'Travel.tw · 2025.01', tags: ['濟州','自駕'], color: 'linear-gradient(135deg,#A8C0A0,#608060)', url: '#' },
+  ],
+  TH: [
+    { title: '清邁古城寺廟地圖：30 間不能錯過', source: 'BK Magazine · 2025.02', tags: ['清邁','寺廟','古城'], color: 'linear-gradient(135deg,#D4A870,#8C6830)', url: '#' },
+    { title: '曼谷 Michelin 街頭美食指南 2025', source: 'Wongnai · 2025.03', tags: ['曼谷','美食','Michelin'], color: 'linear-gradient(135deg,#C8907A,#885040)', url: '#' },
+  ],
+  IT: [
+    { title: '羅馬 3 天行程：競技場到梵蒂岡', source: 'Italia.it · 2025.02', tags: ['羅馬','梵蒂岡','3天'], color: 'linear-gradient(135deg,#D4B890,#8C7840)', url: '#' },
+    { title: '阿馬爾菲海岸公路旅行完整指南', source: 'Lonely Planet · 2025.01', tags: ['阿馬爾菲','海岸','自駕'], color: 'linear-gradient(135deg,#78A8C4,#305878)', url: '#' },
+  ],
+  FR: [
+    { title: '巴黎時尚週期間，最值得一去的 10 間餐廳', source: 'Le Fooding · 2025.03', tags: ['巴黎','餐廳','時尚'], color: 'linear-gradient(135deg,#B898C8,#685880)', url: '#' },
+    { title: '普羅旺斯薰衣草花季時程 × 拍照秘境', source: 'FranceTourisme · 2025.02', tags: ['普羅旺斯','薰衣草'], color: 'linear-gradient(135deg,#9890C8,#485088)', url: '#' },
+  ],
+  GB: [
+    { title: '愛丁堡古堡 × 蘇格蘭高地 5 天行程', source: 'VisitScotland · 2025.02', tags: ['愛丁堡','蘇格蘭','高地'], color: 'linear-gradient(135deg,#88A0B8,#385060)', url: '#' },
+  ],
+  US: [
+    { title: '紐約 7 天行程：曼哈頓到布魯克林', source: 'NYT Travel · 2025.03', tags: ['紐約','曼哈頓'], color: 'linear-gradient(135deg,#C8B8A0,#887850)', url: '#' },
+  ],
+  VN: [
+    { title: '河內 × 下龍灣 5 天深度旅遊指南', source: 'VN Discovery · 2025.02', tags: ['河內','下龍灣'], color: 'linear-gradient(135deg,#90C0A0,#408050)', url: '#' },
+  ],
+  SG: [
+    { title: '新加坡必吃 hawker centre 美食地圖', source: 'HungryGoWhere · 2025.03', tags: ['新加坡','美食','小販中心'], color: 'linear-gradient(135deg,#C0A090,#806040)', url: '#' },
+  ],
+};
+
+Views = window.Views || {};
+Views.Recommend = (() => {
+  let activeCountry = 'JP';
+
+  function renderChips() {
+    const wrap = document.getElementById('rec-country-filter');
+    wrap.innerHTML = COUNTRIES.map(c =>
+      `<div class="country-chip ${c.code === activeCountry ? 'active' : ''}" data-code="${c.code}">${c.flag} ${c.name}</div>`
+    ).join('');
+    wrap.querySelectorAll('.country-chip').forEach(el => {
+      el.addEventListener('click', () => {
+        activeCountry = el.dataset.code;
+        renderChips();
+        renderCards();
+      });
+    });
+  }
+
+  function renderCards() {
+    const list = document.getElementById('rec-card-list');
+    const articles = SAMPLE_ARTICLES[activeCountry] || [];
+    if (!articles.length) {
+      list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🔍</div><div class="empty-state-text">尚無內容</div><div class="empty-state-sub">持續更新中，敬請期待</div></div>`;
+      return;
+    }
+    list.innerHTML = articles.map(a => `
+      <div class="rec-card" onclick="window.open('${a.url}','_blank')">
+        <div class="rec-thumb" style="background:${a.color}"></div>
+        <div class="rec-info">
+          <div class="rec-source">${a.source}</div>
+          <div class="rec-title">${a.title}</div>
+          <div class="rec-tags">${a.tags.map(t => `<span class="rec-tag">${t}</span>`).join('')}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function init() {
+    renderChips();
+    renderCards();
+  }
+
+  return { init };
+})();
+
+
+// ── Views: Trips + AddPlan ──
+// ── Views.Trips ──────────────────────────────────────────────────
+Views = window.Views || {};
+
+Views.Trips = (() => {
+  function init() { render(); }
+
+  function render() {
+    const list = document.getElementById('trips-list');
+    const trips = DB.getIndex();
+    if (!trips.length) {
+      list.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">✈️</div>
+          <div class="empty-state-text">還沒有旅行計畫</div>
+          <div class="empty-state-sub">點擊下方「新增」建立你的第一個旅行計畫吧！</div>
+        </div>`;
+      return;
+    }
+    list.innerHTML = trips.map(t => tripCard(t)).join('');
+    list.querySelectorAll('.trip-card').forEach(el => {
+      el.addEventListener('click', () => App.navigate('editor', { tripId: el.dataset.id }));
+    });
+  }
+
+  function tripCard(t) {
+    const days = DB.getDays(t.id);
+    const total = days.length;
+    const events = DB.getEvents(t.id);
+    const daysWithEvents = new Set(events.map(e => e.dayId)).size;
+    const pct = total > 0 ? Math.round((daysWithEvents / total) * 100) : 0;
+
+    // Cover: up to 3 images from events, fallback to colour ramps
+    const imgs = events.filter(e => e.images && e.images.length).slice(0, 3).map(e => e.images[0]);
+    const FALLBACKS = [
+      'linear-gradient(135deg,#D4956A,#8C5E3A)',
+      'linear-gradient(160deg,#B8A890,#8C7060)',
+      'linear-gradient(135deg,#C8B89C,#907860)',
+    ];
+    const slots = [0, 1, 2].map(i => imgs[i]
+      ? `<div class="trip-cover-img" style="background-image:url('${imgs[i]}')"></div>`
+      : `<div class="trip-cover-img" style="background:${FALLBACKS[i]}"></div>`
+    ).join('');
+
+    const startStr = t.startDate ? new Date(t.startDate).toLocaleDateString('zh-TW', { month: 'short', day: 'numeric' }) : '';
+    const endStr   = t.endDate   ? new Date(t.endDate).toLocaleDateString('zh-TW', { month: 'short', day: 'numeric' }) : '';
+    const destStr  = t.destinations && t.destinations.length ? t.destinations.map(d => {
+      const c = COUNTRIES.find(c => c.code === d);
+      return c ? c.flag : d;
+    }).join(' ') : '';
+
+    return `
+      <div class="trip-card" data-id="${t.id}">
+        <div class="trip-cover">
+          ${slots}
+          <div class="trip-cover-overlay"></div>
+          <div class="trip-cover-text">
+            <div class="trip-cover-name">${destStr} ${t.name}</div>
+            <div class="trip-cover-date">${startStr}${startStr && endStr ? ' – ' : ''}${endStr}${total ? ' · ' + total + '天' : ''}</div>
+          </div>
+        </div>
+        <div class="trip-footer">
+          <span class="trip-days-label">${daysWithEvents}/${total} 天規劃</span>
+          <div class="trip-progress-bar"><div class="trip-progress-fill" style="width:${pct}%"></div></div>
+          ${App.Icons.arrow}
+        </div>
+      </div>`;
+  }
+
+  return { init, render };
+})();
+
+
+// ── Views.AddPlan ─────────────────────────────────────────────────
+Views.AddPlan = (() => {
+  let selectedDests = [];
+  let coverDataURL = null;
+
+  function init() {
+    selectedDests = [];
+    coverDataURL = null;
+    resetForm();
+    bindEvents();
+  }
+
+  function resetForm() {
+    document.getElementById('ap-name').value = '';
+    document.getElementById('ap-start').value = '';
+    document.getElementById('ap-end').value = '';
+    coverDataURL = null;
+    document.getElementById('ap-cover-preview').style.backgroundImage = '';
+    document.getElementById('ap-cover-preview').innerHTML = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="#C4A882" stroke-width="1.8" stroke-linecap="round"/></svg><span style="font-size:10px;color:var(--ink3)">上傳</span>`;
+    renderDestTags();
+    renderDestGrid('');
+  }
+
+  function bindEvents() {
+    // Dest control toggle
+    const ctrl = document.getElementById('ap-dest-control');
+    const dd = document.getElementById('ap-dest-dropdown');
+    ctrl.onclick = () => {
+      ctrl.classList.toggle('open');
+      dd.classList.toggle('open');
+    };
+
+    // Dest search
+    document.getElementById('ap-dest-search').oninput = e => renderDestGrid(e.target.value.trim());
+
+    // Cover upload
+    document.getElementById('ap-cover-input').onchange = async e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      coverDataURL = await App.readFileAsDataURL(file);
+      const prev = document.getElementById('ap-cover-preview');
+      prev.style.backgroundImage = `url('${coverDataURL}')`;
+      prev.style.backgroundSize = 'cover';
+      prev.style.backgroundPosition = 'center';
+      prev.innerHTML = '';
+    };
+
+    // Submit
+    document.getElementById('ap-submit').onclick = submit;
+  }
+
+  function renderDestTags() {
+    const ctrl = document.getElementById('ap-dest-control');
+    const placeholder = selectedDests.length === 0
+      ? `<span class="dest-placeholder">選擇目的地（可複選）</span>`
+      : '';
+    const tags = selectedDests.map(code => {
+      const c = COUNTRIES.find(c => c.code === code);
+      return `<span class="dest-tag-pill" data-code="${code}">${c ? c.flag + ' ' + c.name : code}<span class="remove" data-code="${code}">×</span></span>`;
+    }).join('');
+    ctrl.innerHTML = tags + placeholder + `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke="#9E8270" stroke-width="1.3" stroke-linecap="round"/></svg>`;
+    ctrl.querySelectorAll('.remove').forEach(el => {
+      el.onclick = e => {
+        e.stopPropagation();
+        selectedDests = selectedDests.filter(d => d !== el.dataset.code);
+        renderDestTags();
+        renderDestGrid('');
+      };
+    });
+  }
+
+  function renderDestGrid(query) {
+    const grid = document.getElementById('ap-dest-grid');
+    const filtered = query
+      ? COUNTRIES.filter(c => c.name.includes(query) || c.code.toLowerCase().includes(query.toLowerCase()))
+      : COUNTRIES;
+    grid.innerHTML = filtered.map(c => `
+      <div class="dest-option ${selectedDests.includes(c.code) ? 'selected' : ''}" data-code="${c.code}">
+        <span class="dest-flag">${c.flag}</span>
+        <span class="dest-name">${c.name}</span>
+      </div>`).join('');
+    grid.querySelectorAll('.dest-option').forEach(el => {
+      el.onclick = () => {
+        const code = el.dataset.code;
+        if (selectedDests.includes(code)) {
+          selectedDests = selectedDests.filter(d => d !== code);
+        } else {
+          selectedDests.push(code);
+        }
+        renderDestTags();
+        renderDestGrid(document.getElementById('ap-dest-search').value);
+      };
+    });
+  }
+
+  async function submit() {
+    const name = document.getElementById('ap-name').value.trim();
+    const start = document.getElementById('ap-start').value;
+    const end = document.getElementById('ap-end').value;
+    if (!name) { App.toast('請輸入計畫名稱'); return; }
+    if (!start || !end) { App.toast('請選擇旅行日期'); return; }
+    if (new Date(end) < new Date(start)) { App.toast('回程不能早於出發日'); return; }
+
+    const trip = DB.createTrip({ name, startDate: start, endDate: end, destinations: selectedDests, coverImage: coverDataURL });
+    App.closeModal('modal-add-plan');
+    App.toast('計畫建立成功 ✓');
+    Views.Trips.render();
+    setTimeout(() => App.navigate('editor', { tripId: trip.id }), 300);
+  }
+
+  return { init };
+})();
+
+
+// ── Views: Editor ──
+// ── Views.Editor ─────────────────────────────────────────────────
+Views = window.Views || {};
+Views.Editor = (() => {
+  let tripId = null;
+  let activeDayId = null;
+  let dragSrcId = null;
+
+  function init(params) {
+    tripId = params.tripId;
+    if (!tripId) return;
+    const trip = DB.getTrip(tripId);
+    if (!trip) return;
+
+    // Header
+    document.getElementById('editor-trip-name').textContent = trip.name;
+    const s = trip.startDate ? new Date(trip.startDate).toLocaleDateString('zh-TW', { month: 'long', day: 'numeric' }) : '';
+    const e = trip.endDate   ? new Date(trip.endDate).toLocaleDateString('zh-TW',   { month: 'long', day: 'numeric' }) : '';
+    const days = DB.getDays(tripId);
+    document.getElementById('editor-trip-meta').textContent = `${s}${s && e ? ' — ' : ''}${e}  ·  ${days.length} 天 ${days.length > 0 ? days.length - 1 : 0} 夜`;
+
+    // Back btn
+    document.getElementById('editor-back').onclick = () => {
+      App.navigate('trips');
+    };
+
+    // Export buttons
+    document.getElementById('editor-export-json').onclick = exportJSON;
+    document.getElementById('editor-export-ics').onclick = exportICS;
+
+    // Render day tabs
+    activeDayId = days.length ? days[0].id : null;
+    renderDayTabs();
+  }
+
+  function renderDayTabs() {
+    const days = DB.getDays(tripId);
+    const wrap = document.getElementById('editor-day-tabs');
+    wrap.innerHTML = days.map(d => `
+      <div class="day-tab ${d.id === activeDayId ? 'active' : ''}" data-id="${d.id}">
+        Day ${d.dayNumber}
+        <span style="font-size:9px;color:inherit;opacity:.75;display:block;text-align:center">${formatShortDate(d.date)}</span>
+      </div>`).join('') +
+      `<div class="day-tab add-day" id="add-day-btn">＋ 天</div>`;
+
+    wrap.querySelectorAll('.day-tab:not(.add-day)').forEach(el => {
+      el.addEventListener('click', () => {
+        activeDayId = el.dataset.id;
+        renderDayTabs();
+        renderTimeline();
+      });
+    });
+    document.getElementById('add-day-btn').onclick = addDay;
+    renderTimeline();
+  }
+
+  function renderTimeline() {
+    const tl = document.getElementById('editor-timeline');
+    const events = DB.getEventsByDay(tripId, activeDayId);
+    const transports = DB.getTransports(tripId);
+    tl.innerHTML = '';
+
+    if (!events.length) {
+      tl.innerHTML = `<div style="text-align:center;padding:40px 0 20px;color:var(--ink3)">
+        <div style="font-size:36px;margin-bottom:12px">🗺️</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:18px;color:var(--ink2);margin-bottom:6px">今天還沒有行程</div>
+        <div style="font-size:13px">點擊下方「新增行程」開始規劃</div>
+      </div>`;
+    } else {
+      events.forEach((ev, i) => {
+        // Conflict check
+        const conflicts = DB.checkConflict(tripId, activeDayId, ev.startTime, ev.endTime, ev.id);
+        if (conflicts.length) {
+          tl.innerHTML += `<div class="conflict-warning">⚠ 時間衝突：${ev.title} 與 ${conflicts.map(c => c.title).join('、')} 時段重疊</div>`;
+        }
+        tl.innerHTML += buildEventNode(ev, i === events.length - 1);
+
+        // Transport between events
+        if (i < events.length - 1) {
+          const tr = transports.find(t => t.fromEventId === ev.id);
+          tl.innerHTML += buildTransportNode(ev.id, tr);
+        }
+      });
+    }
+
+    // Add event row
+    tl.innerHTML += `
+      <div class="add-ev-row">
+        <button class="add-ev-btn" id="add-ev-btn">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5v10M1.5 6.5h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          新增行程
+        </button>
+      </div>`;
+    document.getElementById('add-ev-btn').onclick = () => openEventDetail(null);
+
+    // Bind event cards
+    tl.querySelectorAll('[data-ev-id]').forEach(el => {
+      const evId = el.dataset.evId;
+      el.querySelector('.ev-edit-btn')?.addEventListener('click', () => openEventDetail(evId));
+      el.querySelector('.ev-map-btn')?.addEventListener('click', () => openMaps(evId));
+      el.querySelector('.ev-del-btn')?.addEventListener('click', () => deleteEvent(evId));
+    });
+
+    // Transport badges
+    tl.querySelectorAll('[data-tr-from]').forEach(el => {
+      el.addEventListener('click', () => openTransportPicker(el.dataset.trFrom));
+    });
+
+    // Drag & drop
+    bindDragDrop();
+  }
+
+  function buildEventNode(ev, isLast) {
+    const img = ev.images && ev.images.length
+      ? `<div class="ev-thumb" style="background-image:url('${ev.images[0]}')"></div>`
+      : ev.category === 'restaurant' ? `<div class="ev-thumb" style="background:linear-gradient(135deg,#D4B8A8,#A08070)"></div>`
+      : `<div class="ev-thumb" style="background:linear-gradient(135deg,#D4C4A8,#A08858)"></div>`;
+
+    const timeStr = ev.startTime ? ev.startTime + (ev.endTime ? '–' + ev.endTime : '') : '';
+    const addrStr = ev.address ? `<span class="ev-meta-item">${App.Icons.pin} ${ev.address.slice(0, 20)}${ev.address.length > 20 ? '…' : ''}</span>` : '';
+
+    return `
+      <div class="tl-item" data-ev-id="${ev.id}" draggable="true">
+        <div class="tl-time-col"><span class="tl-time">${ev.startTime || ''}</span></div>
+        <div class="tl-spine-col">
+          <div class="tl-dot ${ev.startTime ? 'filled' : ''}"></div>
+          ${!isLast ? '<div class="tl-line"></div>' : ''}
+        </div>
+        <div class="tl-content-col">
+          <div class="ev-card">
+            ${img}
+            <div class="ev-body">
+              <div class="ev-category ${App.categoryClass(ev.category)}">${App.categoryLabel(ev.category)}</div>
+              <div class="ev-title-text">${ev.title || '（未命名行程）'}</div>
+              <div class="ev-meta-row">
+                ${timeStr ? `<span class="ev-meta-item">${App.Icons.clock} ${timeStr}</span>` : ''}
+                ${addrStr}
+              </div>
+            </div>
+            <div class="ev-actions">
+              <button class="ev-action-btn ev-edit-btn">編輯</button>
+              <button class="ev-action-btn ev-map-btn">地圖</button>
+              ${ev.links && ev.links.length ? `<button class="ev-action-btn" onclick="window.open('${ev.links[0].url}','_blank')">連結</button>` : ''}
+              <button class="ev-action-btn ev-del-btn" style="margin-left:auto;color:var(--rose)">刪除</button>
+            </div>
+            <div class="ev-drag-handle" data-drag="${ev.id}">
+              <div class="drag-bar"></div><div class="drag-bar"></div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function buildTransportNode(fromEventId, tr) {
+    const hasTransport = tr && tr.mode;
+    const label = hasTransport ? App.transportLabel(tr.mode) : '＋ 設定交通';
+    const cls = hasTransport ? App.transportClass(tr.mode) : 'tb-unset';
+    const dur = hasTransport && tr.durationMin ? `${tr.durationMin} 分` : '';
+    const cost = hasTransport && tr.cost ? ` · ¥${tr.cost}` : '';
+    const modeIcon = hasTransport ? transportModeIcon(tr.mode) : '';
+    return `
+      <div class="tl-item" style="align-items:center">
+        <div class="tl-time-col"></div>
+        <div class="tl-spine-col">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--cream3);border:1.5px solid var(--cream4);flex-shrink:0"></div>
+          <div class="tl-line" style="min-height:24px"></div>
+        </div>
+        <div class="tl-content-col" style="padding-bottom:0">
+          <div class="transport-node">
+            <div class="transport-badge ${cls}" data-tr-from="${fromEventId}">
+              ${modeIcon}${label}
+            </div>
+            ${dur ? `<span class="transport-dur">${dur}${cost}</span>` : ''}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function transportModeIcon(mode) {
+    const icons = {
+      walk:  `<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="4.5" stroke="currentColor" stroke-width="1"/><path d="M5.5 3.5v3M5.5 8v.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>`,
+      rail:  `<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><rect x="1.5" y="3.5" width="8" height="4.5" rx="1.5" stroke="currentColor" stroke-width="1"/><path d="M3.5 3.5V3a1 1 0 011-1h2a1 1 0 011 1v.5" stroke="currentColor" stroke-width="1"/><circle cx="3.5" cy="7.5" r=".8" fill="currentColor"/><circle cx="7.5" cy="7.5" r=".8" fill="currentColor"/></svg>`,
+      bus:   `<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><rect x="1.5" y="4" width="8" height="4" rx="1.5" stroke="currentColor" stroke-width="1"/><path d="M4 4V3.5a1 1 0 011-1h1a1 1 0 011 1V4" stroke="currentColor" stroke-width="1"/><circle cx="3" cy="7.5" r=".8" fill="currentColor"/><circle cx="8" cy="7.5" r=".8" fill="currentColor"/></svg>`,
+      air:   `<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1.5 8l4-6 4 6" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><path d="M.5 8h10" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>`,
+      ferry: `<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1.5 7c0-1.5 1-3 3-3h2c2 0 3 1.5 3 3v.5H1.5V7z" stroke="currentColor" stroke-width="1"/><path d="M4 4V2.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>`,
+      taxi:  `<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><rect x="1" y="4.5" width="9" height="4" rx="1.5" stroke="currentColor" stroke-width="1"/><path d="M3.5 4.5V3.5a.5.5 0 01.5-.5h3a.5.5 0 01.5.5v1" stroke="currentColor" stroke-width="1"/><circle cx="3" cy="8" r=".8" fill="currentColor"/><circle cx="8" cy="8" r=".8" fill="currentColor"/></svg>`,
+    };
+    return (icons[mode] || '') + ' ';
+  }
+
+  // ── Drag & Drop ──────────────────────────────────────────────
+  function bindDragDrop() {
+    const items = document.querySelectorAll('[data-ev-id]');
+    items.forEach(el => {
+      el.addEventListener('dragstart', e => {
+        dragSrcId = el.dataset.evId;
+        setTimeout(() => el.querySelector('.ev-card').classList.add('dragging'), 0);
+        e.dataTransfer.effectAllowed = 'move';
+      });
+      el.addEventListener('dragend', () => {
+        document.querySelectorAll('.ev-card').forEach(c => c.classList.remove('dragging', 'drag-over'));
+      });
+      el.addEventListener('dragover', e => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        el.querySelector('.ev-card').classList.add('drag-over');
+      });
+      el.addEventListener('dragleave', () => el.querySelector('.ev-card').classList.remove('drag-over'));
+      el.addEventListener('drop', e => {
+        e.preventDefault();
+        if (dragSrcId && dragSrcId !== el.dataset.evId) {
+          const orderedIds = [...document.querySelectorAll('[data-ev-id]')].map(n => n.dataset.evId);
+          const srcIdx = orderedIds.indexOf(dragSrcId);
+          const dstIdx = orderedIds.indexOf(el.dataset.evId);
+          orderedIds.splice(srcIdx, 1);
+          orderedIds.splice(dstIdx, 0, dragSrcId);
+          DB.reorderEvents(tripId, activeDayId, orderedIds);
+          renderTimeline();
+        }
+      });
+    });
+
+    // Touch drag
+    items.forEach(el => {
+      const handle = el.querySelector('.ev-drag-handle');
+      if (!handle) return;
+      let startY, clone;
+      handle.addEventListener('touchstart', e => {
+        startY = e.touches[0].clientY;
+        dragSrcId = el.dataset.evId;
+        clone = el.cloneNode(true);
+        clone.style.cssText = `position:fixed;width:${el.offsetWidth}px;opacity:.8;pointer-events:none;z-index:9999;left:${el.getBoundingClientRect().left}px;top:${el.getBoundingClientRect().top}px;`;
+        document.body.appendChild(clone);
+        el.querySelector('.ev-card').classList.add('dragging');
+      }, { passive: true });
+      handle.addEventListener('touchmove', e => {
+        e.preventDefault();
+        const dy = e.touches[0].clientY - startY;
+        if (clone) clone.style.top = (parseInt(clone.style.top) + dy) + 'px';
+        startY = e.touches[0].clientY;
+        const target = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY)?.closest('[data-ev-id]');
+        document.querySelectorAll('.ev-card').forEach(c => c.classList.remove('drag-over'));
+        if (target && target !== el) target.querySelector('.ev-card').classList.add('drag-over');
+      }, { passive: false });
+      handle.addEventListener('touchend', e => {
+        if (clone) { clone.remove(); clone = null; }
+        el.querySelector('.ev-card').classList.remove('dragging');
+        const target = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY)?.closest('[data-ev-id]');
+        if (target && target !== el) {
+          const orderedIds = [...document.querySelectorAll('[data-ev-id]')].map(n => n.dataset.evId);
+          const srcIdx = orderedIds.indexOf(dragSrcId);
+          const dstIdx = orderedIds.indexOf(target.dataset.evId);
+          if (srcIdx !== -1 && dstIdx !== -1) {
+            orderedIds.splice(srcIdx, 1);
+            orderedIds.splice(dstIdx, 0, dragSrcId);
+            DB.reorderEvents(tripId, activeDayId, orderedIds);
+          }
+        }
+        document.querySelectorAll('.ev-card').forEach(c => c.classList.remove('drag-over'));
+        renderTimeline();
+      });
+    });
+  }
+
+  // ── Actions ──────────────────────────────────────────────────
+  function openEventDetail(evId) {
+    Views.EventDetail.open(tripId, activeDayId, evId, () => renderTimeline());
+  }
+  function openTransportPicker(fromEventId) {
+    Views.TransportPicker.open(tripId, fromEventId, () => renderTimeline());
+  }
+  function openMaps(evId) {
+    const ev = DB.getEvents(tripId).find(e => e.id === evId);
+    if (!ev) return;
+    const q = ev.googleMapsUrl || (ev.address ? `https://maps.google.com/?q=${encodeURIComponent(ev.address)}` : null);
+    if (q) window.open(q, '_blank');
+    else App.toast('尚未設定地址');
+  }
+  function deleteEvent(evId) {
+    if (!confirm('確定刪除此行程？')) return;
+    DB.deleteEvent(tripId, evId);
+    renderTimeline();
+    App.toast('行程已刪除');
+  }
+  function addDay() {
+    const days = DB.getDays(tripId);
+    const trip = DB.getTrip(tripId);
+    // Add one day to endDate
+    const newEnd = new Date(trip.endDate);
+    newEnd.setDate(newEnd.getDate() + 1);
+    const newEndStr = newEnd.toISOString().slice(0, 10);
+    DB.updateTrip(tripId, { endDate: newEndStr });
+    // Re-scaffold days
+    const newDays = [];
+    let cur = new Date(trip.startDate);
+    let i = 1;
+    while (cur <= newEnd) {
+      const existing = days.find(d => d.date === cur.toISOString().slice(0, 10));
+      newDays.push(existing || { id: DB.uid(), tripId, date: cur.toISOString().slice(0, 10), dayNumber: i, note: '' });
+      cur.setDate(cur.getDate() + 1);
+      i++;
+    }
+    newDays.forEach((d, idx) => d.dayNumber = idx + 1);
+    localStorage.setItem('wp_tp:' + tripId + ':days', JSON.stringify(newDays));
+    activeDayId = newDays[newDays.length - 1].id;
+    renderDayTabs();
+    App.toast('已新增第 ' + newDays.length + ' 天');
+  }
+
+  // ── Export ───────────────────────────────────────────────────
+  function exportJSON() {
+    const data = DB.exportTrip(tripId);
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `wanderplan-${DB.getTrip(tripId).name}-${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    App.toast('JSON 匯出成功');
+  }
+  function exportICS() {
+    const ics = DB.generateICS(tripId);
+    const blob = new Blob([ics], { type: 'text/calendar' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `wanderplan-${DB.getTrip(tripId).name}.ics`;
+    a.click();
+    URL.revokeObjectURL(url);
+    App.toast('行事曆匯出成功（.ics）');
+  }
+
+  function formatShortDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    return `${d.getMonth()+1}/${d.getDate()}`;
+  }
+
+  return { init };
+})();
+
+
+// ── Components: EventDetail + TransportPicker ──
+// ── Views.EventDetail ────────────────────────────────────────────
+Views = window.Views || {};
+Views.EventDetail = (() => {
+  let tripId, dayId, eventId, onSave;
+  let ev = {};
+  let activeTab = 'info';
+
+  function open(_tripId, _dayId, _eventId, _onSave) {
+    tripId = _tripId; dayId = _dayId; eventId = _eventId; onSave = _onSave;
+    ev = eventId ? { ...DB.getEvents(tripId).find(e => e.id === eventId) } : {
+      title: '', startTime: '', endTime: '', description: '',
+      images: [], links: [], address: '', googleMapsUrl: '',
+      lat: null, lng: null, category: 'attraction', status: 'planned', tags: []
+    };
+    activeTab = 'info';
+    render();
+    App.openModal('modal-event-detail');
+  }
+
+  function render() {
+    document.getElementById('ev-detail-modal-title').textContent = eventId ? '編輯行程' : '新增行程';
+    document.getElementById('ev-detail-title').value = ev.title || '';
+
+    // Category selector
+    const cats = [
+      { v: 'attraction', l: '🏛️ 景點' }, { v: 'restaurant', l: '🍜 餐廳' },
+      { v: 'hotel', l: '🏨 住宿' }, { v: 'shopping', l: '🛍️ 購物' },
+      { v: 'activity', l: '🎯 體驗' }
+    ];
+    document.getElementById('ev-detail-category').innerHTML = cats.map(c =>
+      `<option value="${c.v}" ${ev.category === c.v ? 'selected' : ''}>${c.l}</option>`
+    ).join('');
+
+    document.getElementById('ev-detail-start').value = ev.startTime || '';
+    document.getElementById('ev-detail-end').value = ev.endTime || '';
+    document.getElementById('ev-detail-desc').value = ev.description || '';
+    document.getElementById('ev-detail-addr').value = ev.address || '';
+
+    renderPhotos();
+    renderLinks();
+    renderMap();
+    switchTab('info');
+    bindTabEvents();
+    bindSave();
+    bindPhotoAdd();
+    bindLinkAdd();
+    bindMapBtn();
+  }
+
+  function switchTab(tab) {
+    activeTab = tab;
+    document.querySelectorAll('.ev-detail-tab').forEach(el => el.classList.toggle('active', el.dataset.tab === tab));
+    document.querySelectorAll('.ev-detail-panel').forEach(el => el.classList.toggle('hidden', el.dataset.panel !== tab));
+  }
+
+  function bindTabEvents() {
+    document.querySelectorAll('.ev-detail-tab').forEach(el => {
+      el.onclick = () => switchTab(el.dataset.tab);
+    });
+  }
+
+  function renderPhotos() {
+    const strip = document.getElementById('ev-photos-strip');
+    strip.innerHTML = (ev.images || []).map((img, i) => `
+      <div class="photo-thumb-ev" style="background-image:url('${img}')">
+        <div class="photo-del" data-idx="${i}">×</div>
+      </div>`).join('') +
+      `<div class="photo-add-btn" id="ev-photo-add-btn">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12M3 9h12" stroke="#C4A882" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>新增照片</span>
+      </div>`;
+    strip.querySelectorAll('.photo-del').forEach(el => {
+      el.onclick = () => {
+        ev.images.splice(+el.dataset.idx, 1);
+        renderPhotos();
+      };
+    });
+  }
+
+  function bindPhotoAdd() {
+    const strip = document.getElementById('ev-photos-strip');
+    strip.onclick = async e => {
+      if (!e.target.closest('#ev-photo-add-btn')) return;
+      const inp = document.createElement('input');
+      inp.type = 'file'; inp.accept = 'image/*'; inp.multiple = true;
+      inp.onchange = async () => {
+        for (const f of inp.files) {
+          const url = await App.readFileAsDataURL(f);
+          ev.images = ev.images || [];
+          ev.images.push(url);
+        }
+        renderPhotos();
+      };
+      inp.click();
+    };
+  }
+
+  function renderLinks() {
+    const wrap = document.getElementById('ev-links-wrap');
+    wrap.innerHTML = (ev.links || []).map((l, i) => `
+      <div class="link-item">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 3H3a1 1 0 00-1 1v7a1 1 0 001 1h7a1 1 0 001-1V8.5" stroke="#4A8C7A" stroke-width="1.2" stroke-linecap="round"/><path d="M8 2h4v4M12 2L7 7" stroke="#4A8C7A" stroke-width="1.2" stroke-linecap="round"/></svg>
+        <a class="link-item-url" href="${l.url}" target="_blank">${l.label || l.url}</a>
+        <span class="link-del" data-idx="${i}">×</span>
+      </div>`).join('');
+    wrap.querySelectorAll('.link-del').forEach(el => {
+      el.onclick = () => { ev.links.splice(+el.dataset.idx, 1); renderLinks(); };
+    });
+  }
+
+  function bindLinkAdd() {
+    document.getElementById('ev-link-add-btn').onclick = () => {
+      const urlInput = document.getElementById('ev-link-url');
+      const lblInput = document.getElementById('ev-link-label');
+      const url = urlInput.value.trim();
+      if (!url) { App.toast('請輸入連結網址'); return; }
+      ev.links = ev.links || [];
+      ev.links.push({ url, label: lblInput.value.trim() || url });
+      urlInput.value = ''; lblInput.value = '';
+      renderLinks();
+    };
+  }
+
+  function renderMap() {
+    const wrap = document.getElementById('ev-mini-map');
+    wrap.innerHTML = ev.address || ev.googleMapsUrl
+      ? `<div style="font-size:13px;color:var(--ink2);padding:0 12px">${ev.address || '已設定位置'}</div>
+         <div class="mini-map-label">Google Maps ↗</div>`
+      : `<svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M16 4a8 8 0 018 8c0 7-8 16-8 16S8 19 8 12a8 8 0 018-8z" stroke="#C4A882" stroke-width="1.5"/><circle cx="16" cy="12" r="3" stroke="#C4A882" stroke-width="1.5"/></svg>`;
+  }
+
+  function bindMapBtn() {
+    document.getElementById('ev-map-open-btn').onclick = () => {
+      const addr = document.getElementById('ev-detail-addr').value.trim();
+      if (!addr) { App.toast('請先輸入地址'); return; }
+      ev.address = addr;
+      window.open(`https://maps.google.com/?q=${encodeURIComponent(addr)}`, '_blank');
+    };
+    document.getElementById('ev-mini-map').onclick = () => {
+      const url = ev.googleMapsUrl || (ev.address ? `https://maps.google.com/?q=${encodeURIComponent(ev.address)}` : null);
+      if (url) window.open(url, '_blank');
+    };
+  }
+
+  function bindSave() {
+    document.getElementById('ev-detail-save').onclick = save;
+  }
+
+  function save() {
+    ev.title       = document.getElementById('ev-detail-title').value.trim();
+    ev.category    = document.getElementById('ev-detail-category').value;
+    ev.startTime   = document.getElementById('ev-detail-start').value;
+    ev.endTime     = document.getElementById('ev-detail-end').value;
+    ev.description = document.getElementById('ev-detail-desc').value.trim();
+    ev.address     = document.getElementById('ev-detail-addr').value.trim();
+    if (ev.address) ev.googleMapsUrl = `https://maps.google.com/?q=${encodeURIComponent(ev.address)}`;
+
+    if (!ev.title) { App.toast('請輸入行程名稱'); return; }
+
+    // Conflict check
+    if (ev.startTime && ev.endTime) {
+      const conflicts = DB.checkConflict(tripId, dayId, ev.startTime, ev.endTime, eventId);
+      if (conflicts.length) {
+        if (!confirm(`時間與「${conflicts[0].title}」重疊，仍要儲存嗎？`)) return;
+      }
+    }
+
+    if (eventId) {
+      DB.updateEvent(tripId, eventId, ev);
+    } else {
+      DB.createEvent(tripId, dayId, ev);
+    }
+
+    App.closeModal('modal-event-detail');
+    App.toast(eventId ? '行程已更新 ✓' : '行程已新增 ✓');
+    onSave && onSave();
+  }
+
+  return { open };
+})();
+
+
+// ── Views.TransportPicker ────────────────────────────────────────
+Views.TransportPicker = (() => {
+  let tripId, fromEventId, onSave;
+  let selectedMode = null;
+  let tr = {};
+
+  const MODES = [
+    { id: 'walk',  label: '步行',  cls: 'walk',  color: 'var(--brown)' },
+    { id: 'rail',  label: '電車',  cls: 'rail',  color: 'var(--teal)' },
+    { id: 'bus',   label: '巴士',  cls: 'bus',   color: 'var(--sky)' },
+    { id: 'air',   label: '飛機',  cls: 'air',   color: 'var(--rose)' },
+    { id: 'ferry', label: '渡輪',  cls: 'ferry', color: 'var(--navy)' },
+    { id: 'taxi',  label: '計程車', cls: 'taxi', color: 'var(--green)' },
+  ];
+
+  const MODE_ICONS = {
+    walk:  `<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.4"/><path d="M11 7.5v4.5M11 15v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+    rail:  `<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="4" y="7" width="14" height="9" rx="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7V6a2 2 0 012-2h2a2 2 0 012 2v1" stroke="currentColor" stroke-width="1.4"/><circle cx="7.5" cy="14" r="1.2" fill="currentColor"/><circle cx="14.5" cy="14" r="1.2" fill="currentColor"/><path d="M4 11h14" stroke="currentColor" stroke-width="1" opacity=".4"/></svg>`,
+    bus:   `<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="7.5" width="16" height="8" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M7 7.5V6.5a1.5 1.5 0 011.5-1.5h5A1.5 1.5 0 0115 6.5v1" stroke="currentColor" stroke-width="1.4"/><circle cx="6.5" cy="14.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="14.5" r="1.2" fill="currentColor"/><path d="M17 10.5h1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>`,
+    air:   `<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 16l7-10 7 10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 16h17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><rect x="7.5" y="16" width="7" height="3.5" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>`,
+    ferry: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3.5 14c0-2.5 2-5 5-5h5c3 0 5 2.5 5 5v1h-15v-1z" stroke="currentColor" stroke-width="1.4"/><path d="M8 9V6.5M14 9V6.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M11 3.5V6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M3 18.5c1.5-.5 3.5-.5 5 0s3.5.5 5 0 3.5-.5 5 0" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>`,
+    taxi:  `<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="2.5" y="9" width="17" height="8" rx="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M7 9V8a1.5 1.5 0 011.5-1.5h5A1.5 1.5 0 0115 8v1" stroke="currentColor" stroke-width="1.4"/><circle cx="6" cy="16" r="1.5" fill="currentColor"/><circle cx="16" cy="16" r="1.5" fill="currentColor"/><path d="M8 6H7M6 6l1-2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>`,
+  };
+
+  function open(_tripId, _fromEventId, _onSave) {
+    tripId = _tripId; fromEventId = _fromEventId; onSave = _onSave;
+    const existing = DB.getTransport(tripId, fromEventId);
+    tr = existing ? { ...existing } : { fromEventId, mode: null, durationMin: '', cost: '', currency: 'JPY', ticketUrl: '', note: '' };
+    selectedMode = tr.mode || null;
+
+    render();
+    App.openModal('modal-transport');
+  }
+
+  function render() {
+    // Find event names
+    const events = DB.getEvents(tripId);
+    const fromEv = events.find(e => e.id === fromEventId);
+    const evList = DB.getEventsByDay(tripId, fromEv?.dayId);
+    const fromIdx = evList.findIndex(e => e.id === fromEventId);
+    const toEv = evList[fromIdx + 1];
+    document.getElementById('tr-route-label').textContent =
+      `${fromEv?.title || '出發'} → ${toEv?.title || '目的地'}`;
+
+    renderModeGrid();
+    renderDetail();
+    bindSave();
+    bindMapsBtn();
+  }
+
+  function renderModeGrid() {
+    const grid = document.getElementById('tr-mode-grid');
+    grid.innerHTML = MODES.map(m => `
+      <button class="tm-btn ${m.cls} ${selectedMode === m.id ? 'active' : ''}" data-mode="${m.id}">
+        <div class="tm-icon" style="background:${selectedMode === m.id ? getBg(m.cls) : 'var(--cream2)'}">
+          <span style="color:${selectedMode === m.id ? getColor(m.cls) : 'var(--ink3)'}">${MODE_ICONS[m.id]}</span>
+        </div>
+        <span class="tm-label" style="color:${selectedMode === m.id ? getColor(m.cls) : 'var(--ink2)'}">${m.label}</span>
+      </button>`).join('');
+    grid.querySelectorAll('.tm-btn').forEach(el => {
+      el.onclick = () => {
+        selectedMode = el.dataset.mode;
+        tr.mode = selectedMode;
+        renderModeGrid();
+        renderDetail();
+      };
+    });
+  }
+
+  function getBg(cls) {
+    return { walk:'var(--amber-light)', rail:'var(--teal-light)', bus:'var(--sky-light)', air:'var(--rose-light)', ferry:'var(--navy-light)', taxi:'var(--green-light)' }[cls] || 'var(--cream2)';
+  }
+  function getColor(cls) {
+    return { walk:'var(--brown)', rail:'var(--teal)', bus:'var(--sky)', air:'var(--rose)', ferry:'var(--navy)', taxi:'var(--green)' }[cls] || 'var(--ink2)';
+  }
+
+  function renderDetail() {
+    const box = document.getElementById('tr-detail-box');
+    if (!selectedMode) { box.style.display = 'none'; return; }
+    box.style.display = 'block';
+    box.className = `transport-detail-box ${selectedMode}`;
+    const m = MODES.find(x => x.id === selectedMode);
+    box.innerHTML = `
+      <div class="tr-detail-title" style="color:${getColor(selectedMode)}">${m.label} — 詳細資訊</div>
+      <div class="tr-fields">
+        <div class="tr-field">
+          <div class="tr-field-label">時間（分鐘）</div>
+          <input id="tr-dur" type="number" min="1" placeholder="例：45" value="${tr.durationMin || ''}">
+        </div>
+        <div class="tr-field">
+          <div class="tr-field-label">票價 / 費用</div>
+          <input id="tr-cost" type="number" min="0" placeholder="例：230" value="${tr.cost || ''}">
+        </div>
+      </div>
+      <div class="tr-field" style="margin-top:10px">
+        <div class="tr-field-label">票務連結（KKday、Klook…）</div>
+        <input id="tr-ticket" type="url" placeholder="https://…" value="${tr.ticketUrl || ''}" style="background:rgba(255,255,255,.7);border:1px solid rgba(0,0,0,.08);border-radius:var(--r-sm);padding:7px 10px;font-size:13px;color:var(--ink);width:100%">
+      </div>
+      <div class="tr-field" style="margin-top:10px">
+        <div class="tr-field-label">備忘</div>
+        <input id="tr-note" type="text" placeholder="例：乘 JR 山手線 → 渋谷方向" value="${tr.note || ''}" style="background:rgba(255,255,255,.7);border:1px solid rgba(0,0,0,.08);border-radius:var(--r-sm);padding:7px 10px;font-size:13px;color:var(--ink);width:100%">
+      </div>
+      <button class="tr-maps-link" id="tr-maps-btn">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5a4 4 0 014 4c0 3.5-4 7-4 7S3 9 3 5.5a4 4 0 014-4z" stroke="currentColor" stroke-width="1.2"/><circle cx="7" cy="5.5" r="1.5" stroke="currentColor" stroke-width="1.2"/></svg>
+        在 Google Maps 查看路線
+      </button>`;
+    bindMapsBtn();
+  }
+
+  function bindMapsBtn() {
+    const btn = document.getElementById('tr-maps-btn');
+    if (!btn) return;
+    btn.onclick = () => {
+      const events = DB.getEvents(tripId);
+      const fromEv = events.find(e => e.id === fromEventId);
+      const evList = DB.getEventsByDay(tripId, fromEv?.dayId);
+      const fromIdx = evList.findIndex(e => e.id === fromEventId);
+      const toEv = evList[fromIdx + 1];
+      if (!fromEv?.address || !toEv?.address) {
+        App.toast('請先設定出發 / 目的地地址');
+        return;
+      }
+      const modeMap = { walk: 'walking', rail: 'transit', bus: 'transit', air: 'flying', ferry: 'transit', taxi: 'driving' };
+      const gMode = modeMap[selectedMode] || 'driving';
+      window.open(`https://maps.google.com/maps?saddr=${encodeURIComponent(fromEv.address)}&daddr=${encodeURIComponent(toEv.address)}&dirflg=${gMode === 'transit' ? 'r' : gMode === 'walking' ? 'w' : 'd'}`, '_blank');
+    };
+  }
+
+  function bindSave() {
+    document.getElementById('tr-save-btn').onclick = save;
+    document.getElementById('tr-delete-btn').onclick = () => {
+      DB.deleteTransport(tripId, fromEventId);
+      App.closeModal('modal-transport');
+      App.toast('交通資訊已刪除');
+      onSave && onSave();
+    };
+  }
+
+  function save() {
+    if (!selectedMode) { App.toast('請選擇交通方式'); return; }
+    const dur = document.getElementById('tr-dur')?.value;
+    const cost = document.getElementById('tr-cost')?.value;
+    const ticket = document.getElementById('tr-ticket')?.value;
+    const note = document.getElementById('tr-note')?.value;
+
+    DB.upsertTransport(tripId, {
+      fromEventId,
+      mode: selectedMode,
+      durationMin: dur ? +dur : null,
+      cost: cost ? +cost : null,
+      currency: 'JPY',
+      ticketUrl: ticket || '',
+      note: note || ''
+    });
+    App.closeModal('modal-transport');
+    App.toast('交通設定已儲存 ✓');
+    onSave && onSave();
+  }
+
+  return { open };
+})();
+
+
+// ── Views: Profile ──
+// ── Views.Profile ────────────────────────────────────────────────
+Views = window.Views || {};
+Views.Profile = (() => {
+  function init() { render(); }
+
+  function render() {
+    // Calendar sync toggle
+    const syncToggle = document.getElementById('cal-sync-toggle');
+    const synced = localStorage.getItem('wp_cal_sync') === '1';
+    syncToggle.classList.toggle('on', synced);
+    syncToggle.onclick = () => {
+      const next = !syncToggle.classList.contains('on');
+      syncToggle.classList.toggle('on', next);
+      localStorage.setItem('wp_cal_sync', next ? '1' : '0');
+      App.toast(next ? 'Google Calendar 同步已開啟' : '同步已關閉');
+    };
+
+    // Export all
+    document.getElementById('profile-export-all').onclick = exportAll;
+
+    // Import
+    document.getElementById('profile-import-btn').onclick = () => {
+      document.getElementById('profile-import-input').click();
+    };
+    document.getElementById('profile-import-input').onchange = importData;
+
+    // Pref countries
+    document.getElementById('profile-pref-countries').onclick = () => {
+      App.toast('偏好設定功能即將推出');
+    };
+    document.getElementById('profile-pref-style').onclick = () => {
+      App.toast('旅遊風格設定即將推出');
+    };
+    document.getElementById('profile-pref-sources').onclick = () => {
+      App.toast('部落格來源設定即將推出');
+    };
+  }
+
+  function exportAll() {
+    const data = DB.exportAll();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `wanderplan-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    App.toast('全部計畫已備份 ✓');
+  }
+
+  function importData(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (data.trips && Array.isArray(data.trips)) {
+          data.trips.forEach(t => DB.importTrip(t));
+          App.toast(`已匯入 ${data.trips.length} 個計畫`);
+        } else if (data.trip) {
+          DB.importTrip(data);
+          App.toast('計畫匯入成功');
+        } else {
+          App.toast('格式不支援');
+        }
+        Views.Trips.render();
+      } catch {
+        App.toast('匯入失敗，請確認檔案格式');
+      }
+      e.target.value = '';
+    };
+    reader.readAsText(file);
+  }
+
+  return { init };
+})();
+
+
+// ── App Shell (load last) ──
+// ── WanderPlan · App Shell ───────────────────────────────────────
+'use strict';
+
+const App = (() => {
+  let currentScreen = 'recommend';
+  let history = [];
+
+  // ── Toast ────────────────────────────────────────────────────
+  function toast(msg, duration = 2400) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove('show'), duration);
+  }
+
+  // ── Modal Sheet ──────────────────────────────────────────────
+  const overlays = {};
+  function openModal(id) {
+    const o = document.getElementById(id);
+    if (!o) return;
+    o.classList.add('show');
+    overlays[id] = true;
+  }
+  function closeModal(id) {
+    const o = document.getElementById(id);
+    if (!o) return;
+    o.classList.remove('show');
+    delete overlays[id];
+  }
+  function closeAllModals() {
+    document.querySelectorAll('.modal-overlay.show').forEach(o => o.classList.remove('show'));
+  }
+
+  // ── Screen Router ────────────────────────────────────────────
+  const screens = ['recommend', 'trips', 'add-plan', 'editor', 'profile'];
+
+  function navigate(screenId, params = {}, pushHistory = true) {
+    const prev = document.querySelector('.screen.active');
+    const next = document.getElementById(`screen-${screenId}`);
+    if (!next) return;
+    if (prev && prev !== next) {
+      prev.classList.add('slide-left');
+      setTimeout(() => prev.classList.remove('active', 'slide-left'), 220);
+    }
+    next.classList.add('active');
+    if (pushHistory && currentScreen !== screenId) history.push({ screen: currentScreen, params: {} });
+    currentScreen = screenId;
+    updateNav(screenId);
+    // Fire screen init
+    if (screenId === 'recommend')   Views.Recommend.init(params);
+    if (screenId === 'trips')       Views.Trips.init(params);
+    if (screenId === 'editor')      Views.Editor.init(params);
+    if (screenId === 'profile')     Views.Profile.init(params);
+  }
+
+  function back() {
+    if (history.length === 0) return;
+    const prev = history.pop();
+    navigate(prev.screen, prev.params, false);
+  }
+
+  function updateNav(screenId) {
+    document.querySelectorAll('.nav-item').forEach(el => {
+      el.classList.toggle('active', el.dataset.screen === screenId);
+    });
+  }
+
+  // ── Image helpers ────────────────────────────────────────────
+  function readFileAsDataURL(file) {
+    return new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = () => res(r.result);
+      r.onerror = () => rej(r.error);
+      r.readAsDataURL(file);
+    });
+  }
+
+  function categoryLabel(cat) {
+    return { attraction: '景點', restaurant: '餐廳', hotel: '住宿', shopping: '購物', activity: '體驗', transport: '交通' }[cat] || cat;
+  }
+  function transportLabel(mode) {
+    return { walk: '步行', rail: '電車', bus: '巴士', air: '飛機', ferry: '渡輪', taxi: '計程車' }[mode] || '交通';
+  }
+  function transportClass(mode) {
+    return { walk: 'tb-walk', rail: 'tb-rail', bus: 'tb-bus', air: 'tb-air', ferry: 'tb-ferry', taxi: 'tb-taxi' }[mode] || 'tb-unset';
+  }
+  function categoryClass(cat) {
+    return { attraction: 'cat-attraction', restaurant: 'cat-restaurant', hotel: 'cat-hotel', shopping: 'cat-shopping', activity: 'cat-activity' }[cat] || '';
+  }
+
+  // ── SVG icons ────────────────────────────────────────────────
+  const Icons = {
+    back: `<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M11 3.5L5.5 9l5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    clock: `<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" stroke="currentColor" stroke-width="1.1"/><path d="M5 2.8V5l1.2 1.2" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>`,
+    pin: `<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 1a3 3 0 013 3c0 2.5-3 6-3 6S2 6.5 2 4a3 3 0 013-3z" stroke="currentColor" stroke-width="1.1"/><circle cx="5" cy="4" r="1" fill="currentColor"/></svg>`,
+    plus: `<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5v10M1.5 6.5h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`,
+    arrow: `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2.5l4 4.5-4 4.5" stroke="#9E8270" stroke-width="1.4" stroke-linecap="round"/></svg>`,
+    link: `<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M4 2H2a1 1 0 00-1 1v5a1 1 0 001 1h5a1 1 0 001-1V6" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><path d="M6 1h3v3M9 1L5 5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>`,
+  };
+
+  // ── Boot ─────────────────────────────────────────────────────
+  function init() {
+    // Nav click
+    document.querySelectorAll('.nav-item').forEach(el => {
+      el.addEventListener('click', () => {
+        const s = el.dataset.screen;
+        if (s === 'add-plan') {
+          Views.AddPlan.init();
+          openModal('modal-add-plan');
+          return;
+        }
+        navigate(s);
+      });
+    });
+
+    // Close modals on overlay click
+    document.querySelectorAll('.modal-overlay').forEach(el => {
+      el.addEventListener('click', e => {
+        if (e.target === el) closeModal(el.id);
+      });
+    });
+
+    // Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+
+    navigate('recommend', {}, false);
+  }
+
+  return { navigate, back, toast, openModal, closeModal, closeAllModals, readFileAsDataURL, categoryLabel, transportLabel, transportClass, categoryClass, Icons };
+})();
+
+window.App = App;
+document.addEventListener('DOMContentLoaded', () => App.init());
+
+</script>
 </body>
 </html>
