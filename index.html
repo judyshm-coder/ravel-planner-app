@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#8B6F52">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="WanderPlan">
+  <title>WanderPlan 旅遊規劃</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN: RECOMMEND
+  ════════════════════════════════════════════════ -->
+  <div id="screen-recommend" class="screen">
+    <div class="page-header">
+      <div class="page-title">探索旅遊靈感</div>
+      <div class="page-subtitle">依照你的興趣，發現最新旅遊內容</div>
+    </div>
+    <div id="rec-country-filter" class="country-filter"></div>
+    <div class="scroll-body">
+      <div id="rec-card-list" class="rec-cards" style="padding-bottom:20px"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN: TRIPS LIST
+  ════════════════════════════════════════════════ -->
+  <div id="screen-trips" class="screen">
+    <div class="page-header" style="padding-bottom:14px">
+      <div class="page-title">我的旅行計畫</div>
+    </div>
+    <div class="scroll-body">
+      <div id="trips-list" class="trips-list"></div>
+      <div style="height:20px"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN: EDITOR
+  ════════════════════════════════════════════════ -->
+  <div id="screen-editor" class="screen" style="background:var(--cream)">
+    <div class="editor-header">
+      <div class="sub-header" style="padding:12px 20px 0">
+        <div class="back-btn" id="editor-back">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M11 3.5L5.5 9l5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          我的計畫
+        </div>
+        <div style="display:flex;gap:8px;margin-left:auto">
+          <button class="btn-ghost" id="editor-export-ics" style="font-size:11px;padding:5px 10px">📅 行事曆</button>
+          <button class="btn-ghost" id="editor-export-json" style="font-size:11px;padding:5px 10px">⬇ 備份</button>
+        </div>
+      </div>
+      <div id="editor-trip-name" class="editor-trip-name" style="padding:6px 20px 0"></div>
+      <div id="editor-trip-meta" class="editor-trip-meta" style="padding:2px 20px 8px"></div>
+    </div>
+    <div id="editor-day-tabs" class="day-tabs-wrap"></div>
+    <div class="scroll-body">
+      <div id="editor-timeline" class="timeline"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN: PROFILE
+  ════════════════════════════════════════════════ -->
+  <div id="screen-profile" class="screen">
+    <div class="scroll-body">
+      <div class="profile-hero">
+        <div class="avatar-circle">旅</div>
+        <div>
+          <div class="profile-name">旅行者</div>
+          <div class="profile-email">點選下方設定個人偏好</div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-label">旅遊偏好</div>
+        <div class="settings-group">
+          <div class="settings-row" id="profile-pref-countries">
+            <div class="settings-icon" style="background:var(--amber-light)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1l1.8 3.6 4 .6-2.9 2.8.7 4L8 10.3 4.4 12l.7-4L2.2 5.2l4-.6z" stroke="#C8813A" stroke-width="1.2" stroke-linejoin="round"/></svg>
+            </div>
+            <span class="settings-text">感興趣的國家 / 地區</span>
+            <span class="settings-right">→</span>
+          </div>
+          <div class="settings-row" id="profile-pref-style">
+            <div class="settings-icon" style="background:var(--teal-light)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2a5 5 0 100 10A5 5 0 008 2z" stroke="#4A8C7A" stroke-width="1.2"/><path d="M8 5v3l2 1" stroke="#4A8C7A" stroke-width="1.2" stroke-linecap="round"/></svg>
+            </div>
+            <span class="settings-text">旅遊風格偏好</span>
+            <span class="settings-right">→</span>
+          </div>
+          <div class="settings-row" id="profile-pref-sources">
+            <div class="settings-icon" style="background:var(--rose-light)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 13S3 9.5 3 6a5 5 0 0110 0c0 3.5-5 7-5 7z" stroke="#C47070" stroke-width="1.2"/></svg>
+            </div>
+            <span class="settings-text">追蹤的部落格 / 來源</span>
+            <span class="settings-right">→</span>
+          </div>
+        </div>
+
+        <div class="settings-section-label">資料 / 同步</div>
+        <div class="settings-group">
+          <div class="settings-row" style="cursor:default">
+            <div class="settings-icon" style="background:var(--green-light)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="11" rx="2" stroke="#3B6D11" stroke-width="1.2"/><path d="M5 1v3M11 1v3M2 8h12" stroke="#3B6D11" stroke-width="1.2" stroke-linecap="round"/></svg>
+            </div>
+            <span class="settings-text">Google Calendar 同步</span>
+            <div class="toggle-switch" id="cal-sync-toggle"><div class="toggle-knob"></div></div>
+          </div>
+          <div class="settings-row" id="profile-export-all">
+            <div class="settings-icon" style="background:var(--cream2)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3 3 3-3" stroke="#6B5040" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 12h10" stroke="#6B5040" stroke-width="1.3" stroke-linecap="round"/></svg>
+            </div>
+            <span class="settings-text">匯出全部計畫（JSON 備份）</span>
+            <span class="settings-right">↓</span>
+          </div>
+          <div class="settings-row" id="profile-import-btn">
+            <div class="settings-icon" style="background:var(--cream2)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 10V2M5 5l3-3 3 3" stroke="#6B5040" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 12h10" stroke="#6B5040" stroke-width="1.3" stroke-linecap="round"/></svg>
+            </div>
+            <span class="settings-text">匯入計畫（JSON）</span>
+            <span class="settings-right">↑</span>
+          </div>
+        </div>
+        <input type="file" id="profile-import-input" accept=".json" style="display:none">
+
+        <div class="settings-section-label">關於</div>
+        <div class="settings-group">
+          <div class="settings-row" style="cursor:default">
+            <div class="settings-icon" style="background:var(--cream2)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#9E8270" stroke-width="1.2"/><path d="M8 7v5" stroke="#9E8270" stroke-width="1.3" stroke-linecap="round"/><circle cx="8" cy="5" r=".8" fill="#9E8270"/></svg>
+            </div>
+            <span class="settings-text">WanderPlan v1.0</span>
+            <span class="settings-right" style="font-size:11px">旅遊規劃 PWA</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       BOTTOM NAV
+  ════════════════════════════════════════════════ -->
+  <nav id="bottom-nav">
+    <div class="nav-item" data-screen="recommend">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+        <path d="M3 6h18M3 12h13M3 18h9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <circle cx="19" cy="17" r="3" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M21.5 19.5l2 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      <span class="nav-label">推薦</span>
+    </div>
+    <div class="nav-item" data-screen="trips">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="3" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="13" y="3" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="3" y="13" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="13" y="13" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <span class="nav-label">行程</span>
+    </div>
+    <div class="nav-item" data-screen="add-plan">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <span class="nav-label">新增</span>
+    </div>
+    <div class="nav-item" data-screen="profile">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M4 20c0-4.418 3.582-8 8-8s8 3.582 8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <span class="nav-label">個人</span>
+    </div>
+  </nav>
+
+</div><!-- #app -->
+
+<!-- ═══════════════════════════════════════════════
+     MODAL: ADD PLAN
+════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-add-plan">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title">建立新計畫</div>
+      <div class="modal-close" onclick="App.closeModal('modal-add-plan')">✕</div>
+    </div>
+    <div class="add-form-body">
+      <div class="form-group">
+        <div class="form-label">計畫名稱</div>
+        <input class="form-input" id="ap-name" type="text" placeholder="例：大阪之旅、首爾五日遊…" maxlength="40">
+      </div>
+
+      <div class="form-group">
+        <div class="form-label">旅行日期</div>
+        <div class="date-row">
+          <div class="date-box">
+            <div class="date-box-label">出發</div>
+            <input type="date" id="ap-start" style="border:none;background:transparent;font-size:14px;font-weight:500;color:var(--ink);width:100%;font-family:inherit">
+          </div>
+          <div class="date-box">
+            <div class="date-box-label">回程</div>
+            <input type="date" id="ap-end" style="border:none;background:transparent;font-size:14px;font-weight:500;color:var(--ink);width:100%;font-family:inherit">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="form-label">目的地（可複選）</div>
+        <div class="dest-control" id="ap-dest-control">
+          <span class="dest-placeholder">選擇國家 / 地區…</span>
+        </div>
+        <div class="dest-dropdown" id="ap-dest-dropdown">
+          <input class="dest-search" id="ap-dest-search" type="text" placeholder="🔍 搜尋國家…">
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:6px">熱門目的地</div>
+          <div class="dest-grid" id="ap-dest-grid"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="form-label">封面圖片</div>
+        <div class="cover-upload">
+          <div class="cover-btn" id="ap-cover-preview" onclick="document.getElementById('ap-cover-input').click()">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="#C4A882" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <span style="font-size:10px;color:var(--ink3)">上傳</span>
+          </div>
+          <input type="file" id="ap-cover-input" accept="image/*" style="display:none">
+          <div class="cover-hint">上傳自訂封面圖片，或建立計畫後將自動從行程中擷取圖片作為封面。</div>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="ap-submit">建立計畫</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     MODAL: EVENT DETAIL
+════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-event-detail">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="ev-detail-modal-title">新增行程</div>
+      <div class="modal-close" onclick="App.closeModal('modal-event-detail')">✕</div>
+    </div>
+
+    <!-- Title & Category -->
+    <div style="padding:0 20px 10px;display:flex;flex-direction:column;gap:10px">
+      <input class="form-input" id="ev-detail-title" type="text" placeholder="行程名稱（例：道頓堀商店街）">
+      <select class="form-input" id="ev-detail-category" style="font-size:13px"></select>
+    </div>
+
+    <!-- Tabs -->
+    <div class="ev-detail-tabs">
+      <div class="ev-detail-tab active" data-tab="info">詳情</div>
+      <div class="ev-detail-tab" data-tab="photos">相片</div>
+      <div class="ev-detail-tab" data-tab="links">連結</div>
+      <div class="ev-detail-tab" data-tab="map">地圖</div>
+    </div>
+
+    <!-- Panel: Info -->
+    <div class="ev-detail-panel" data-panel="info">
+      <div class="form-group">
+        <div class="form-label">時間</div>
+        <div class="time-row">
+          <div class="time-box">
+            <div class="time-box-label">開始</div>
+            <input type="time" id="ev-detail-start">
+          </div>
+          <div class="time-box">
+            <div class="time-box-label">結束</div>
+            <input type="time" id="ev-detail-end">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">地址</div>
+        <div class="addr-row">
+          <div class="addr-input-wrap">
+            <input class="form-input" id="ev-detail-addr" type="text" placeholder="輸入地址或搜尋…">
+          </div>
+          <div class="map-btn" id="ev-map-open-btn">地圖 ↗</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">備忘 / 行程內容</div>
+        <textarea class="form-input" id="ev-detail-desc" placeholder="記錄行程細節、注意事項…" rows="4"></textarea>
+      </div>
+    </div>
+
+    <!-- Panel: Photos -->
+    <div class="ev-detail-panel hidden" data-panel="photos">
+      <div class="form-label" style="margin-bottom:10px">行程相片</div>
+      <div class="photo-strip-wrap" id="ev-photos-strip"></div>
+    </div>
+
+    <!-- Panel: Links -->
+    <div class="ev-detail-panel hidden" data-panel="links">
+      <div class="form-label" style="margin-bottom:8px">外部連結</div>
+      <div id="ev-links-wrap" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px"></div>
+      <div class="form-group" style="gap:8px">
+        <input class="form-input" id="ev-link-url" type="url" placeholder="貼上連結 https://…">
+        <input class="form-input" id="ev-link-label" type="text" placeholder="連結名稱（選填）">
+        <button class="btn-ghost" id="ev-link-add-btn" style="align-self:flex-start">＋ 新增連結</button>
+      </div>
+    </div>
+
+    <!-- Panel: Map -->
+    <div class="ev-detail-panel hidden" data-panel="map">
+      <div class="form-label" style="margin-bottom:8px">位置地圖</div>
+      <div class="mini-map" id="ev-mini-map">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M20 6a10 10 0 0110 10c0 9-10 18-10 18S10 25 10 16A10 10 0 0120 6z" stroke="#C4A882" stroke-width="1.5"/><circle cx="20" cy="16" r="4" stroke="#C4A882" stroke-width="1.5"/></svg>
+      </div>
+      <div style="font-size:12px;color:var(--ink3);margin-top:8px;text-align:center">請在「詳情」頁輸入地址後，點擊「地圖 ↗」確認位置</div>
+    </div>
+
+    <!-- Save -->
+    <div style="padding:12px 20px 4px;display:grid;grid-template-columns:1fr 2fr;gap:10px">
+      <button class="btn-secondary" onclick="App.closeModal('modal-event-detail')">取消</button>
+      <button class="btn-primary" id="ev-detail-save">儲存行程</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     MODAL: TRANSPORT PICKER
+════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-transport">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">交通方式</div>
+        <div id="tr-route-label" style="font-size:12px;color:var(--ink3);margin-top:2px"></div>
+      </div>
+      <div class="modal-close" onclick="App.closeModal('modal-transport')">✕</div>
+    </div>
+
+    <div class="transport-mode-grid" id="tr-mode-grid"></div>
+
+    <div id="tr-detail-box" class="transport-detail-box rail" style="display:none"></div>
+
+    <div style="padding:0 20px 4px;display:grid;grid-template-columns:1fr 1fr 2fr;gap:8px">
+      <button class="btn-ghost" id="tr-delete-btn" style="color:var(--rose)">刪除</button>
+      <button class="btn-secondary" onclick="App.closeModal('modal-transport')">取消</button>
+      <button class="btn-primary" id="tr-save-btn">儲存交通</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- ── Scripts ── -->
+<script src="js/db.js"></script>
+<script>window.Views = {};</script>
+<script src="js/views/home.js"></script>
+<script src="js/views/trips.js"></script>
+<script src="js/views/editor.js"></script>
+<script src="js/components/event-detail.js"></script>
+<script src="js/views/profile.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
