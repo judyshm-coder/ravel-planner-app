@@ -1,16 +1,32 @@
 {
-  "name": "WanderPlan 旅遊規劃",
-  "short_name": "WanderPlan",
+  "name": "Journi 旅你",
+  "short_name": "Journi",
   "description": "精緻旅遊行程規劃 PWA",
-  "start_url": "/",
+  "start_url": "/journi-app",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#F7F3EE",
   "theme_color": "#8B6F52",
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
   ],
-  "categories": ["travel", "lifestyle"],
-  "lang": "zh-TW"
+  "categories": [
+    "entertainment",
+    "lifestyle",
+    "travel"
+  ],
+  "lang": "zh-TW",
+  "id": "Journi",
+  "dir": "auto"
 }
