@@ -292,12 +292,7 @@ textarea.fi{resize:vertical;min-height:82px;line-height:1.6}
 /* Day tabs */
 .daybar{display:flex;gap:6px;overflow-x:auto;padding:0 20px 10px;flex-shrink:0}
 .daybar::-webkit-scrollbar{display:none}
-.dtab{
-  padding:6px 13px;border-radius:var(--rpill);font-size:11px;font-weight:500;
-  white-space:nowrap;border:1px solid var(--cream3);background:var(--white);
-  color:var(--ink3);cursor:pointer;flex-shrink:0;text-align:center;line-height:1.4;
-  transition:all .15s;
-}
+.dtab{padding:5px 10px 5px 13px;border-radius:var(--rpill);font-size:11px;font-weight:500;white-space:nowrap;border:1px solid var(--cream3);background:var(--white);color:var(--ink3);cursor:pointer;flex-shrink:0;line-height:1.4;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
 .dtab.on{background:var(--brown);color:#fff;border-color:var(--brown)}
 .dtab.add{border-style:dashed;color:var(--brown);background:transparent}
 /* Timeline */
@@ -311,7 +306,7 @@ textarea.fi{resize:vertical;min-height:82px;line-height:1.6}
 .ln{width:2px;flex:1;background:var(--cream3);min-height:10px}
 .tlc{flex:1;min-width:0;padding-bottom:6px}
 /* Event card */
-.ev{background:var(--white);border-radius:var(--r);border:1px solid var(--cream3);overflow:hidden;margin-bottom:2px}
+.ev{background:var(--white);border-radius:var(--r);border:1px solid var(--cream3);overflow:hidden;margin-bottom:2px;position:relative}
 .ev.dragging{opacity:.45;border:2px dashed var(--brown)}
 .ev.dragover{border-color:var(--brown);background:var(--amber-l)}
 .ev-img{height:70px;background-size:cover;background-position:center}
@@ -343,7 +338,7 @@ textarea.fi{resize:vertical;min-height:82px;line-height:1.6}
 .tr-none {background:transparent;color:var(--brown);border-style:dashed;border-color:var(--brown-l)}
 .tr-dur{font-size:10px;color:var(--ink3)}
 /* Add event */
-.add-ev{display:flex;padding:8px 0 4px 66px}
+.add-ev{display:flex;justify-content:center;padding:8px 0 4px}
 .add-ev-btn{
   display:inline-flex;align-items:center;gap:6px;
   background:var(--white);border:1.5px dashed var(--brown-l);
@@ -494,11 +489,11 @@ textarea.fi{resize:vertical;min-height:82px;line-height:1.6}
 .tc-btn{display:flex;align-items:center;gap:4px;font-size:11px;padding:5px 10px;border-radius:8px;background:var(--cream2);color:var(--ink2);cursor:pointer;transition:background .12s}
 .tc-btn:active{background:var(--cream3)}
 .tc-btn-del{color:var(--rose)!important}
-.past-badge{position:absolute;top:10px;right:10px;background:rgba(44,31,20,.55);color:#fff;font-size:9px;font-weight:500;padding:3px 8px;border-radius:var(--rpill)}
-.ev-del-btn{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(196,112,112,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;transition:background .12s}
+.past-badge{background:rgba(44,31,20,.55);color:#fff;font-size:9px;font-weight:500;padding:3px 8px;border-radius:var(--rpill);display:inline-block}
+.ev-del-btn{position:absolute;top:5px;right:5px;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.85);border:1px solid rgba(196,112,112,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;transition:all .12s}
 .ev-del-btn:active{background:rgba(196,112,112,.35)}
 .ev-bd{padding:9px 32px 9px 11px}
-.dtab-del{position:absolute;top:-5px;right:-5px;width:16px;height:16px;border-radius:50%;background:var(--rose);color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;line-height:1}
+.dtab-del{width:15px;height:15px;border-radius:50%;background:rgba(196,112,112,.25);color:var(--rose);font-size:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;line-height:1;flex-shrink:0;font-weight:700}
 .confirm-overlay{position:fixed;inset:0;background:rgba(44,31,20,.5);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .18s;pointer-events:none}
 .confirm-overlay.show{opacity:1;pointer-events:all}
 .confirm-box{background:var(--white);border-radius:18px;padding:24px 20px;width:calc(100% - 60px);max-width:360px;text-align:center}
@@ -521,7 +516,7 @@ textarea.fi{resize:vertical;min-height:82px;line-height:1.6}
 .ledger-del{color:var(--ink3);font-size:14px;cursor:pointer}
 .gmap-frame{width:100%;height:140px;border-radius:var(--r);overflow:hidden;background:var(--cream3);position:relative}
 .gmap-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--ink3);height:140px;justify-content:center}
-.link-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.link-list{display:flex;flex-direction:column;gap:8px}
 .link-item{display:flex;align-items:center;gap:8px;background:var(--white);border:1px solid var(--cream3);border-radius:var(--r);padding:9px 12px;min-width:0}
 .link-url{flex:1;font-size:12px;color:var(--teal);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .link-del{color:var(--ink3);font-size:14px;cursor:pointer;flex-shrink:0}
@@ -567,8 +562,6 @@ textarea.fi{resize:vertical;min-height:82px;line-height:1.6}
         <div style="display:flex;gap:5px;margin-left:auto;flex-shrink:0">
           <button class="btn-g" id="btn-ics" style="padding:5px 9px" title="匯出行事曆">📅</button>
           <button class="btn-g" id="btn-json" style="padding:5px 9px" title="備份JSON">⬇</button>
-          <button class="btn-g" id="btn-edit-plan" style="padding:5px 9px;color:var(--teal)" title="編輯計畫">✏️</button>
-          <button class="btn-g" id="btn-del-plan" style="padding:5px 9px;color:var(--rose)" title="刪除計畫">🗑️</button>
         </div>
       </div>
       <div id="ed-name" class="ename"></div>
@@ -650,10 +643,17 @@ textarea.fi{resize:vertical;min-height:82px;line-height:1.6}
         <div class="fg"><div class="fl">記帳</div><div id="ev-ledger" class="link-list"></div><div style="display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center"><input class="fi" id="ev-led-desc" type="text" placeholder="消費項目…" style="font-size:13px"><input class="fi" id="ev-led-amt" type="number" placeholder="金額" style="width:80px;font-size:13px"><button class="btn-g" id="ev-led-add">＋</button></div></div>
       </div>
     </div>
-    <div class="ev-panel hide" id="ep-links">
-      <div class="fl" style="margin-bottom:8px">外部連結</div>
-      <div id="ev-links" class="link-list"></div>
-      <div style="display:flex;flex-direction:column;gap:8px"><input class="fi" id="ev-lurl" type="url" placeholder="貼上連結 https://…"><input class="fi" id="ev-llbl" type="text" placeholder="連結名稱（選填）"><button class="btn-g" id="ev-ladd" style="align-self:flex-start">＋ 新增連結</button></div>
+    <div class="ev-panel hide" id="ep-links" style="gap:10px">
+      <div>
+        <div class="fl" style="margin-bottom:6px">外部連結</div>
+        <div id="ev-links" class="link-list"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="fl" style="margin-bottom:2px">新增連結</div>
+        <input class="fi" id="ev-lurl" type="url" placeholder="貼上連結 https://…">
+        <input class="fi" id="ev-llbl" type="text" placeholder="連結名稱（選填）">
+        <button class="btn-g" id="ev-ladd" style="align-self:flex-start">＋ 新增連結</button>
+      </div>
     </div>
     <div class="ev-panel hide" id="ep-map">
       <div class="fl" style="margin-bottom:8px">位置地圖</div>
@@ -961,16 +961,12 @@ function iRec(){
 // ════ SCREEN: TRIPS ══════════════════════════════════════════════
 var TripTab='upcoming',TripFilter='';
 function iTrips(){
-  // Build filter dropdown from all destinations
-  var idx=getIndex();
-  var allDests=[];
-  idx.forEach(function(t){(t.destinations||[]).forEach(function(d){if(!allDests.includes(d))allDests.push(d)})});
+  // Build filter: show ALL countries from COUNTRIES list (not just used ones)
   var sel=document.getElementById('trips-filter');
   var curVal=sel.value;
   sel.innerHTML='<option value="">全部國家</option>';
-  allDests.forEach(function(d){
-    var c=COUNTRIES.find(function(x){return x.c===d});
-    sel.innerHTML+='<option value="'+d+'"'+(curVal===d?' selected':'')+'>'+( c?c.f+' '+c.n:d)+'</option>';
+  COUNTRIES.forEach(function(c){
+    sel.innerHTML+='<option value="'+c.c+'"'+(curVal===c.c?' selected':'')+'>'+c.f+' '+c.n+'</option>';
   });
   sel.onchange=function(){TripFilter=sel.value;renderTrips()};
   // Tab
@@ -1047,7 +1043,8 @@ function tripCardHTML(t){
   return '<div class="tc" data-id="'+t.id+'">'
     +(past?'<div class="past-badge">已完成</div>':'')
     +'<div class="tc-cover">'+slots+'<div class="tc-ov"></div>'
-    +'<div class="tc-txt"><div class="tc-name">'+dests+' '+t.name+'</div>'
+    +'<div class="tc-txt">'
+    +(past?'<div style="margin-bottom:4px"><span class="past-badge">已完成</span></div>':'')+'<div class="tc-name">'+dests+' '+t.name+'</div>'
     +'<div class="tc-date">'+fmtDate(t.startDate)+' – '+fmtDate(t.endDate)+(total?' · '+total+'天':'')+'</div></div></div>'
     +'<div class="tc-foot"><span class="tc-lbl">'+done+'/'+total+' 天</span>'
     +'<div class="tc-prog"><div class="tc-fill" style="width:'+pct+'%"></div></div>'
@@ -1074,26 +1071,51 @@ function iAP(editTid){
   // Cover preview
   var cvbtn=document.getElementById('ap-cvbtn');
   var inner=document.getElementById('ap-cv-inner');
+  var cvbtn2b=document.getElementById('ap-cvbtn');
+  var inner2b=document.getElementById('ap-cv-inner');
+  // Clear any old preview
+  var oldPrev=cvbtn2b?cvbtn2b.querySelector('img.cv-preview'):null;
+  if(oldPrev)oldPrev.remove();
   if(ACOV){
-    inner.innerHTML='<img src="'+ACOV+'" style="width:100%;height:100%;object-fit:cover;display:block;position:absolute;top:0;left:0;border-radius:10px">';
-    cvbtn.style.backgroundImage='none';
+    if(inner2b)inner2b.style.display='none';
+    var prevImg=document.createElement('img');
+    prevImg.className='cv-preview';
+    prevImg.src=ACOV;
+    prevImg.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:10px;display:block';
+    if(cvbtn2b)cvbtn2b.appendChild(prevImg);
   } else {
-    cvbtn.style.backgroundImage='';
-    inner.innerHTML='<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="#C4A882" stroke-width="1.8" stroke-linecap="round"/></svg><span style="font-size:10px;color:var(--ink3)">上傳</span>';
+    if(inner2b){inner2b.style.display='flex';inner2b.innerHTML='<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="#C4A882" stroke-width="1.8" stroke-linecap="round"/></svg><span style="font-size:10px;color:var(--ink3)">上傳</span>';}
   }
   rDTags();rDGrid('');
   var ctrl=document.getElementById('ap-dc'),dd=document.getElementById('ap-dd');
   ctrl.onclick=function(e){e.stopPropagation();ctrl.classList.toggle('open');dd.classList.toggle('open')};
   document.getElementById('ap-dsrch').oninput=function(){rDGrid(this.value.trim())};
-  document.getElementById('ap-cv-inp').onchange=function(){
+  var cvInp=document.getElementById('ap-cv-inp');
+  // Clone input to clear previous listeners
+  var cvInpNew=cvInp.cloneNode(true);
+  cvInp.parentNode.replaceChild(cvInpNew,cvInp);
+  cvInpNew.onchange=function(){
     var f=this.files[0];if(!f)return;
-    readFile(f).then(function(url){
-      ACOV=url;
-      inner.innerHTML='<img src="'+url+'" style="width:100%;height:100%;object-fit:cover;display:block;position:absolute;top:0;left:0;border-radius:10px">';
-      cvbtn.style.backgroundImage='none';
-    });
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      ACOV=ev.target.result;
+      var inner2=document.getElementById('ap-cv-inner');
+      var cvbtn2=document.getElementById('ap-cvbtn');
+      if(inner2){
+        inner2.style.display='none';
+      }
+      // Remove old preview img if any
+      var old=cvbtn2.querySelector('img.cv-preview');
+      if(old)old.remove();
+      var img=document.createElement('img');
+      img.className='cv-preview';
+      img.src=ACOV;
+      img.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:10px;display:block';
+      cvbtn2.appendChild(img);
+    };
+    reader.readAsDataURL(f);
   };
-  cvbtn.onclick=function(){document.getElementById('ap-cv-inp').click()};
+  cvbtn.onclick=function(){document.getElementById('ap-cv-inp')?document.getElementById('ap-cv-inp').click():cvInpNew.click()};
   // Prevent accidental close – only close on explicit button
   var overlay=document.getElementById('m-add');
   overlay.onclick=null; // disable backdrop click to close
@@ -1144,13 +1166,7 @@ function iEditor(p){
   document.getElementById('ed-back').onclick=function(){go('trips')};
   document.getElementById('btn-ics').onclick=function(){dlBlob(genICS(ET),'journi-'+trip.name+'.ics','text/calendar');toast('行事曆匯出成功 ✓')};
   document.getElementById('btn-json').onclick=function(){dlBlob(JSON.stringify(exportTrip(ET),null,2),'journi-'+trip.name+'.json','application/json');toast('JSON 備份完成 ✓')};
-  document.getElementById('btn-edit-plan').onclick=function(){openEditPlan(ET)};
-  document.getElementById('btn-del-plan').onclick=function(){
-    var trip=getTrip(ET);
-    confirmDialog('刪除計畫','確定要刪除「'+trip.name+'」？所有行程資料將永久刪除。','確認刪除',function(){
-      deleteTrip(ET);go('trips');toast('計畫已刪除');
-    });
-  };
+  // Edit/delete plan is available from trips list only
   EDay=days.length?days[0].id:null;
   rDayBar();
 }
@@ -1159,9 +1175,8 @@ function rDayBar(){
   var bar=document.getElementById('daybar');
   bar.innerHTML=days.map(function(d){
     return '<div class="dtab'+(d.id===EDay?' on':'')+'" data-id="'+d.id+'">'
-      +'Day '+d.n+'<br><span style="font-size:9px">'+d.date.slice(5).replace('-','/')+'</span>'
-      +'<div class="dtab-del" data-did="'+d.id+'" title="刪除此天">×</div>'
-      +'</div>';
+      +'<span style="text-align:center"><span style="display:block">Day '+d.n+'</span><span style="font-size:9px">'+d.date.slice(5).replace('-','/')+'</span></span>'
+      +(days.length>1?'<div class="dtab-del" data-did="'+d.id+'" title="刪除此天">×</div>':'')+'</div>';
   }).join('')+'<div class="dtab add" id="add-day-btn">＋</div>';
   bar.querySelectorAll('.dtab:not(.add)').forEach(function(el){
     el.addEventListener('click',function(e){
@@ -1234,7 +1249,16 @@ function rTL(){
     });
   }
   tl.innerHTML+='<div class="add-ev"><button class="add-ev-btn" id="add-ev-btn"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5v10M1.5 6.5h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> 新增行程</button></div>';
-  document.getElementById('add-ev-btn').onclick=function(){openEvModal(null)};
+  document.getElementById('add-ev-btn').onclick=function(){
+    // Default startTime = last event's endTime (or startTime if no endTime)
+    var lastEvs=getEvsByDay(ET,EDay);
+    var defaultStart='';
+    if(lastEvs.length>0){
+      var last=lastEvs[lastEvs.length-1];
+      defaultStart=last.endTime||last.startTime||'';
+    }
+    openEvModal(null,defaultStart);
+  };
   tl.querySelectorAll('[data-ev]').forEach(function(row){
     var eid=row.dataset.ev;
     row.querySelector('[data-edit]')&&(row.querySelector('[data-edit]').onclick=function(){openEvModal(eid)});
@@ -1314,61 +1338,126 @@ function delEv(eid){
 
 // Event drag (reorder events)
 function bindEvDrag(){
-  var rows=document.querySelectorAll('[data-ev]');
+  var rows=[].slice.call(document.querySelectorAll('[data-ev]'));
+  var dragSrc=null,dragTarget=null;
+
   rows.forEach(function(row){
-    row.addEventListener('dragstart',function(e){
+    var handle=row.querySelector('.ev-drag');
+    var card=row.querySelector('.ev');
+    if(!handle||!card)return;
+
+    // Only drag handle initiates drag
+    handle.setAttribute('draggable','true');
+    handle.addEventListener('dragstart',function(e){
+      dragSrc=row;
       EDrag=row.dataset.ev;
-      setTimeout(function(){var ev=row.querySelector('.ev');if(ev)ev.classList.add('dragging')},0);
       e.dataTransfer.effectAllowed='move';
+      e.dataTransfer.setData('text/plain',row.dataset.ev);
+      setTimeout(function(){if(card)card.classList.add('dragging')},0);
     });
-    row.addEventListener('dragend',function(){document.querySelectorAll('.ev').forEach(function(c){c.classList.remove('dragging','dragover')})});
-    row.addEventListener('dragover',function(e){e.preventDefault();var ev=row.querySelector('.ev');if(ev)ev.classList.add('dragover')});
-    row.addEventListener('dragleave',function(){var ev=row.querySelector('.ev');if(ev)ev.classList.remove('dragover')});
+
+    row.addEventListener('dragover',function(e){
+      e.preventDefault();
+      e.dataTransfer.dropEffect='move';
+      if(dragSrc&&dragSrc!==row){
+        // Remove highlight from all other rows
+        rows.forEach(function(r){var c=r.querySelector('.ev');if(c)c.classList.remove('dragover')});
+        if(card)card.classList.add('dragover');
+        dragTarget=row;
+      }
+    });
+    row.addEventListener('dragleave',function(e){
+      // Only remove if truly leaving this row (not entering a child)
+      if(!row.contains(e.relatedTarget)){
+        if(card)card.classList.remove('dragover');
+      }
+    });
     row.addEventListener('drop',function(e){
       e.preventDefault();
-      if(EDrag&&EDrag!==row.dataset.ev){
-        var ids=[].slice.call(document.querySelectorAll('[data-ev]')).map(function(r){return r.dataset.ev});
-        var si=ids.indexOf(EDrag),di=ids.indexOf(row.dataset.ev);
-        ids.splice(si,1);ids.splice(di,0,EDrag);
-        reorderEvs(ET,EDay,ids);rTL();
+      rows.forEach(function(r){var c=r.querySelector('.ev');if(c)c.classList.remove('dragging','dragover')});
+      if(dragSrc&&row!==dragSrc){
+        var ids=rows.map(function(r){return r.dataset.ev});
+        var si=ids.indexOf(dragSrc.dataset.ev),di=ids.indexOf(row.dataset.ev);
+        if(si!==-1&&di!==-1){
+          ids.splice(si,1);ids.splice(di,0,dragSrc.dataset.ev);
+          reorderEvs(ET,EDay,ids);rTL();
+        }
       }
+      dragSrc=null;dragTarget=null;
     });
   });
+
+  document.addEventListener('dragend',function(){
+    rows.forEach(function(r){var c=r.querySelector('.ev');if(c)c.classList.remove('dragging','dragover')});
+    dragSrc=null;dragTarget=null;
+  },{once:true});
 }
 
-// Transport drag (reorder transports)
+// Transport drag: swap between positions
 var TrDragFrom=null;
 function bindTrDrag(){
-  document.querySelectorAll('[data-tr-drag]').forEach(function(handle){
+  var containers=[].slice.call(document.querySelectorAll('.tr-container'));
+  containers.forEach(function(container){
+    var handle=container.querySelector('[data-tr-drag]');
+    if(!handle)return;
     var fromId=handle.dataset.trDrag;
-    var container=handle.closest('.tr-container');
-    container.setAttribute('draggable','true');
-    container.addEventListener('dragstart',function(e){
+    var badge=container.querySelector('.tr-badge');
+
+    handle.setAttribute('draggable','true');
+    handle.addEventListener('dragstart',function(e){
       TrDragFrom=fromId;
       e.dataTransfer.effectAllowed='move';
+      e.dataTransfer.setData('text/plain',fromId);
       e.stopPropagation();
+      setTimeout(function(){if(badge)badge.style.opacity='.4'},0);
     });
-    container.addEventListener('dragover',function(e){e.preventDefault();e.stopPropagation();container.style.borderTop='2px solid var(--brown)'});
-    container.addEventListener('dragleave',function(){container.style.borderTop=''});
-    container.addEventListener('drop',function(e){
-      e.preventDefault();e.stopPropagation();container.style.borderTop='';
+    handle.addEventListener('dragend',function(){
+      if(badge)badge.style.opacity='';
+      TrDragFrom=null;
+      containers.forEach(function(c){c.style.outline='';c.style.background=''});
+    });
+
+    container.addEventListener('dragover',function(e){
+      e.preventDefault();e.stopPropagation();
       if(TrDragFrom&&TrDragFrom!==fromId){
-        var allFromIds=[].slice.call(document.querySelectorAll('.tr-container')).map(function(c){return c.querySelectorAll('[data-tr-drag]')[0]?c.querySelectorAll('[data-tr-drag]')[0].dataset.trDrag:null}).filter(Boolean);
-        var si=allFromIds.indexOf(TrDragFrom),di=allFromIds.indexOf(fromId);
-        allFromIds.splice(si,1);allFromIds.splice(di,0,TrDragFrom);
-        reorderTrs(ET,allFromIds);rTL();
+        containers.forEach(function(c){c.style.outline='';});
+        container.style.outline='2px solid var(--brown)';
+        container.style.borderRadius='8px';
       }
     });
-    container.addEventListener('dragend',function(){container.style.borderTop='';TrDragFrom=null});
+    container.addEventListener('dragleave',function(e){
+      if(!container.contains(e.relatedTarget)){
+        container.style.outline='';
+      }
+    });
+    container.addEventListener('drop',function(e){
+      e.preventDefault();e.stopPropagation();
+      containers.forEach(function(c){c.style.outline='';});
+      if(TrDragFrom&&TrDragFrom!==fromId){
+        // Swap the two transports' fromId mappings
+        var trs=getTrs(ET);
+        var srcTr=trs.find(function(t){return t.fromId===TrDragFrom});
+        var dstTr=trs.find(function(t){return t.fromId===fromId});
+        if(srcTr&&dstTr){
+          // Swap mode, duration, cost, etc. but keep fromId/toId
+          var fields=['mode','durationMin','cost','currency','ticketUrl','note'];
+          var tmp={};
+          fields.forEach(function(f){tmp[f]=srcTr[f];srcTr[f]=dstTr[f];dstTr[f]=tmp[f]});
+          lsSet('tp:'+ET+':tr',trs);
+          rTL();toast('交通已交換');
+        }
+      }
+      TrDragFrom=null;
+    });
   });
 }
 
 // ════ MODAL: EVENT DETAIL ════════════════════════════════════════
 var EDAT={},EID=null;
-function openEvModal(eid){
+function openEvModal(eid,defaultStart){
   EID=eid;
   EDAT=eid?Object.assign({},getEvs(ET).find(function(e){return e.id===eid}))
-    :{title:'',startTime:'',endTime:'',description:'',images:[],links:[],
+    :{title:'',startTime:defaultStart||'',endTime:'',description:'',images:[],links:[],
       address:'',googleMapsUrl:'',lat:null,lng:null,
       category:'attraction',status:'planned',tags:[],
       mood:'',journal:'',ledger:[]};
