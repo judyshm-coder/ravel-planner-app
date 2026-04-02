@@ -83,6 +83,8 @@ textarea.fi{resize:vertical;min-height:82px;line-height:1.6}
 .rc-ttl{font-family:'DM Serif Display',serif;font-size:14px;color:var(--ink);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .rc-tags{display:flex;gap:5px;flex-wrap:wrap}
 .rc-tag{font-size:10px;padding:2px 8px;border-radius:var(--rpill);background:var(--amber-l);color:var(--amber)}
+.pref-chip{padding:8px 16px;border-radius:var(--rpill);font-size:13px;border:1.5px solid var(--cream3);cursor:pointer;background:var(--cream1);color:var(--ink2);transition:all .15s;user-select:none}
+.pref-chip.on{background:var(--amber-l);border-color:var(--amber);color:var(--amber);font-weight:600}
 /* TRIPS */
 .trips-wrap{padding:10px 20px 24px;display:flex;flex-direction:column;gap:14px}
 .tc{border-radius:20px;border:1px solid var(--cream3);overflow:hidden;background:var(--white);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:opacity .15s;position:relative}
@@ -326,6 +328,7 @@ textarea.fi{resize:vertical;min-height:82px;line-height:1.6}
 .flt-card-line::after{content:'✈';position:absolute;right:-2px;top:-8px;font-size:12px;color:var(--sky)}
 .flt-card-price{font-family:'DM Serif Display',serif;font-size:22px;color:var(--sky);padding-left:8px;margin-bottom:10px}
 .flt-card-price span{font-size:11px;color:var(--ink3);font-family:'DM Sans',sans-serif;font-weight:400}
+.flt-ref-note{font-size:10px;color:var(--ink3);font-family:'DM Sans',sans-serif;font-weight:400;opacity:.65}
 .flt-card-acts{display:flex;gap:8px;padding-left:8px}
 .flt-card-btn-add{flex:1;padding:8px;background:var(--amber-l);color:var(--amber);border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:none;transition:background .12s;text-align:center}
 .flt-card-btn-add:active{background:#f0e0c0}
@@ -390,7 +393,7 @@ textarea.fi{resize:vertical;min-height:82px;line-height:1.6}
         <div class="sg">
           <div class="sg-lbl">旅遊偏好</div>
           <div class="sg-grp">
-            <div class="sr" id="p-pref-c"><div class="si" style="background:var(--amber-l)">⭐</div><span class="st">感興趣的國家</span><span class="sv">→</span></div>
+            <div class="sr" id="p-pref-c"><div class="si" style="background:var(--amber-l)">⭐</div><span class="st">感興趣的國家</span><span class="sv" id="pref-c-sv">全部</span></div>
             <div class="sr" id="p-pref-s"><div class="si" style="background:var(--teal-l)">🕐</div><span class="st">旅遊風格偏好</span><span class="sv">→</span></div>
           </div>
           <div class="sg-lbl">備份 / 匯入</div>
@@ -577,6 +580,23 @@ textarea.fi{resize:vertical;min-height:82px;line-height:1.6}
       <button class="btn-g" id="tr-del" style="color:var(--rose)">刪除</button>
       <button class="btn-s" onclick="closeM('m-tr')">取消</button>
       <button class="btn-p" id="tr-ok">儲存交通</button>
+    </div>
+  </div>
+</div>
+
+<!-- PREF COUNTRIES MODAL -->
+<div class="mo" id="m-pref-c">
+  <div class="ms">
+    <div class="mh"></div>
+    <div class="mhdr">
+      <span style="font-family:'DM Serif Display',serif;font-size:18px">感興趣的國家</span>
+      <span id="pref-c-x" style="cursor:pointer;padding:4px 10px;font-size:18px;color:var(--ink3)">✕</span>
+    </div>
+    <div style="padding:0 20px 14px;font-size:13px;color:var(--ink3);line-height:1.5">選擇後，推薦頁面只顯示這些國家的內容。<br>不選任何國家 = 顯示全部。</div>
+    <div id="pref-c-chips" style="padding:0 20px 20px;display:flex;flex-wrap:wrap;gap:9px"></div>
+    <div style="padding:0 20px 20px;display:flex;gap:10px">
+      <button id="pref-c-clear" style="flex:1;padding:12px;border-radius:12px;border:1px solid var(--cream3);background:var(--white);font-size:13px;cursor:pointer;color:var(--ink3)">清除全部</button>
+      <button id="pref-c-save" style="flex:2;padding:12px;border-radius:12px;border:none;background:var(--amber);color:#fff;font-size:14px;font-weight:600;cursor:pointer">儲存</button>
     </div>
   </div>
 </div>
@@ -795,13 +815,69 @@ var COUNTRIES=[
 ];
 var ARTICLES={
   JP:[
-    {t:'大阪春季必去！道頓堀夜景完整攻略',src:'MATCHA · 2025.03',tags:['大阪','夜景','美食'],bg:'linear-gradient(135deg,#D4956A,#8C5E3A)'},
-    {t:'京都嵐山超私房5條散步路線',src:'痞客邦 · 2025.02',tags:['京都','散步'],bg:'linear-gradient(135deg,#A8C4B4,#5C8870)'},
-    {t:'東京 2025 最新開幕景點與主題樂園',src:'Travel.tw · 2025.03',tags:['東京','新開幕'],bg:'linear-gradient(135deg,#C4A0B8,#7A5870)'},
+    {t:'大阪春季必去！道頓堀夜景完整攻略',src:'MATCHA · 2025.03',date:'2025-03',tags:['大阪','夜景','美食'],
+     bg:'linear-gradient(135deg,#D4956A,#8C5E3A)',img:'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&w=200&h=150',url:'https://matcha-jp.com/tw/area/osaka'},
+    {t:'京都嵐山超私房5條散步路線',src:'Japan Guide · 2025.02',date:'2025-02',tags:['京都','散步'],
+     bg:'linear-gradient(135deg,#A8C4B4,#5C8870)',img:'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=200&h=150',url:'https://www.japan-guide.com/e/e3905.html'},
+    {t:'東京 2025 最新開幕景點與主題樂園',src:'東京觀光 · 2025.03',date:'2025-03',tags:['東京','新開幕'],
+     bg:'linear-gradient(135deg,#C4A0B8,#7A5870)',img:'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=200&h=150',url:'https://www.gotokyo.org/tc/index.html'},
+    {t:'富士山五合目＋河口湖一日完美路線',src:'Japan Guide · 2025.01',date:'2025-01',tags:['富士山','自然'],
+     bg:'linear-gradient(135deg,#B0C4D8,#607890)',img:'https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?auto=format&fit=crop&w=200&h=150',url:'https://www.japan-guide.com/e/e6901.html'},
+    {t:'沖繩藍洞浮潛＆古宇利島一日遊',src:'MATCHA · 2025.02',date:'2025-02',tags:['沖繩','海島','浮潛'],
+     bg:'linear-gradient(135deg,#7EC8D8,#3A8898)',img:'https://images.unsplash.com/photo-1590142395698-2b9faae01c3d?auto=format&fit=crop&w=200&h=150',url:'https://matcha-jp.com/tw/area/okinawa'},
+    {t:'北海道冬季雪祭與函館百萬夜景',src:'北海道觀光 · 2025.01',date:'2025-01',tags:['北海道','雪祭','夜景'],
+     bg:'linear-gradient(135deg,#C8D8E8,#788898)',img:'https://images.unsplash.com/photo-1546854773-31e7e2ac6973?auto=format&fit=crop&w=200&h=150',url:'https://www.visit-hokkaido.jp/tw/'},
   ],
-  KR:[{t:'首爾聖水洞咖啡地圖 2025 最新整理',src:'IG Travel · 2025.03',tags:['首爾','咖啡'],bg:'linear-gradient(135deg,#C8A8B8,#886878)'}],
-  TH:[{t:'清邁古城寺廟地圖：30 間不能錯過',src:'BK Magazine · 2025.02',tags:['清邁','寺廟'],bg:'linear-gradient(135deg,#D4A870,#8C6830)'}],
+  KR:[
+    {t:'首爾聖水洞咖啡地圖 2025 最新整理',src:'Visit Seoul · 2025.03',date:'2025-03',tags:['首爾','咖啡'],
+     bg:'linear-gradient(135deg,#C8A8B8,#886878)',img:'https://images.unsplash.com/photo-1517154421773-0529f29ea451?auto=format&fit=crop&w=200&h=150',url:'https://www.visitseoul.net/tw'},
+    {t:'釜山海雲台海岸散步＆甘川文化村',src:'韓國觀光 · 2025.02',date:'2025-02',tags:['釜山','海岸','藝術'],
+     bg:'linear-gradient(135deg,#A8B8C8,#607080)',img:'https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=200&h=150',url:'https://english.visitkorea.or.kr/'},
+    {t:'濟州島油菜花季完整春遊攻略',src:'韓國觀光 · 2025.03',date:'2025-03',tags:['濟州','花季','自然'],
+     bg:'linear-gradient(135deg,#B8C8A8,#708060)',img:'https://images.unsplash.com/photo-1601621915196-2621bfb0cd6e?auto=format&fit=crop&w=200&h=150',url:'https://english.visitkorea.or.kr/'},
+  ],
+  TH:[
+    {t:'清邁古城寺廟地圖：30 間不能錯過',src:'TAT Thailand · 2025.02',date:'2025-02',tags:['清邁','寺廟'],
+     bg:'linear-gradient(135deg,#D4A870,#8C6830)',img:'https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=200&h=150',url:'https://www.tourismthailand.org/Destinations/Provinces/Chiang-Mai/1'},
+    {t:'曼谷大皇宮＆臥佛寺完整參觀指南',src:'TAT Thailand · 2025.03',date:'2025-03',tags:['曼谷','寺廟','文化'],
+     bg:'linear-gradient(135deg,#D4B870,#8C7830)',img:'https://images.unsplash.com/photo-1563492065599-3520f775eeed?auto=format&fit=crop&w=200&h=150',url:'https://www.tourismthailand.org/Destinations/Provinces/Bangkok/1'},
+    {t:'普吉島最美海灘排名 2025 全攻略',src:'TAT Thailand · 2025.01',date:'2025-01',tags:['普吉','海灘','度假'],
+     bg:'linear-gradient(135deg,#70C4D4,#308898)',img:'https://images.unsplash.com/photo-1537956965359-7573183d1f57?auto=format&fit=crop&w=200&h=150',url:'https://www.tourismthailand.org/Destinations/Provinces/Phuket/8'},
+  ],
+  VN:[
+    {t:'河內老城區漫步：36 條街市集完全指南',src:'越南觀光 · 2025.03',date:'2025-03',tags:['河內','市集','文化'],
+     bg:'linear-gradient(135deg,#C8A878,#806040)',img:'https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=200&h=150',url:'https://vietnam.travel/'},
+    {t:'下龍灣遊輪 2 晚 3 日精選行程推薦',src:'越南觀光 · 2025.02',date:'2025-02',tags:['下龍灣','郵輪','自然'],
+     bg:'linear-gradient(135deg,#78B8C8,#386878)',img:'https://images.unsplash.com/photo-1578469645742-46cae010e5d4?auto=format&fit=crop&w=200&h=150',url:'https://vietnam.travel/places/ha-long-bay'},
+    {t:'胡志明市 Top 10 街頭美食必吃清單',src:'越南觀光 · 2025.01',date:'2025-01',tags:['胡志明','美食','街頭'],
+     bg:'linear-gradient(135deg,#D4B890,#8C7050)',img:'https://images.unsplash.com/photo-1559592413-7cbb6961e0a9?auto=format&fit=crop&w=200&h=150',url:'https://vietnam.travel/places/ho-chi-minh-city'},
+  ],
+  SG:[
+    {t:'濱海灣花園夜光秀免費觀賞完整攻略',src:'新加坡旅遊局 · 2025.03',date:'2025-03',tags:['濱海灣','夜景','免費'],
+     bg:'linear-gradient(135deg,#98C8D8,#487888)',img:'https://images.unsplash.com/photo-1565967511849-76a60a516170?auto=format&fit=crop&w=200&h=150',url:'https://www.visitsingapore.com/zh_tw/'},
+    {t:'小印度＆牛車水一日文化深度漫遊',src:'新加坡旅遊局 · 2025.02',date:'2025-02',tags:['小印度','牛車水','文化'],
+     bg:'linear-gradient(135deg,#C8A8C8,#806080)',img:'https://images.unsplash.com/photo-1525625293412-4f6df3458b35?auto=format&fit=crop&w=200&h=150',url:'https://www.visitsingapore.com/zh_tw/see-do-singapore/'},
+    {t:'聖淘沙環球影城最新攻略 2025',src:'新加坡旅遊局 · 2025.01',date:'2025-01',tags:['聖淘沙','主題樂園','親子'],
+     bg:'linear-gradient(135deg,#A8C8A8,#607860)',img:'https://images.unsplash.com/photo-1508615039623-a25605d2b022?auto=format&fit=crop&w=200&h=150',url:'https://www.visitsingapore.com/zh_tw/see-do-singapore/'},
+  ],
 };
+// 每天輪播：過濾超過 18 個月的舊文章，依日期新→舊排序後再做每日亂序
+function dailyShuffle(arr){
+  var now=new Date(),cutoff=new Date(now.getFullYear(),now.getMonth()-18,1);
+  var fresh=arr.filter(function(a){return!a.date||new Date(a.date+'-01')>=cutoff});
+  if(!fresh.length)fresh=arr.slice(); // 若全過期則保留全部
+  fresh.sort(function(a,b){return(b.date||'').localeCompare(a.date||'')});
+  var seed=((now.getFullYear()-2020)*500+(now.getMonth()*31)+now.getDate())|0;
+  // 在相同月份的文章之間做每日亂序
+  var result=[],i=0;
+  while(i<fresh.length){
+    var j=i;while(j<fresh.length&&fresh[j].date===fresh[i].date)j++;
+    var group=fresh.slice(i,j);
+    for(var k=group.length-1;k>0;k--){seed=(seed*1664525+1013904223)&0x7fffffff;var r=(seed>>>0)%(k+1);var tmp=group[k];group[k]=group[r];group[r]=tmp;}
+    result=result.concat(group);i=j;
+  }
+  return result;
+}
 var EV_CATS=[
   {v:'attraction',l:'🏛️ 景點',cls:'cat-a'},{v:'restaurant',l:'🍜 餐廳',cls:'cat-r'},
   {v:'hotel',l:'🏨 住宿',cls:'cat-h'},{v:'shopping',l:'🛍️ 購物',cls:'cat-s'},
@@ -860,17 +936,48 @@ function confirmDialog(title,msg,okLabel,cb){
 }
 
 // ════ RECOMMEND ════════════════════════════════════════════════
+// ── 感興趣國家偏好 ──────────────────────────────────────────
+var PREF_C=lsGet('pref_c')||[];
+function savePrefC(){lsSet('pref_c',PREF_C);rPrefCSv()}
+function rPrefCSv(){var el=document.getElementById('pref-c-sv');if(el)el.textContent=PREF_C.length?PREF_C.length+'個國家':'全部'}
+function openPrefC(){
+  var tmpSel=PREF_C.slice(); // 暫存，取消時不影響原值
+  var chips=document.getElementById('pref-c-chips');
+  var recCountries=COUNTRIES.filter(function(c){return ARTICLES[c.c]&&ARTICLES[c.c].length});
+  chips.innerHTML=recCountries.map(function(c){
+    return'<div class="pref-chip'+(tmpSel.includes(c.c)?' on':'')+'" data-c="'+c.c+'">'+c.f+' '+c.n+'</div>';
+  }).join('');
+  chips.querySelectorAll('.pref-chip').forEach(function(el){
+    el.onclick=function(){
+      var code=el.dataset.c;
+      if(tmpSel.includes(code))tmpSel.splice(tmpSel.indexOf(code),1);else tmpSel.push(code);
+      el.classList.toggle('on',tmpSel.includes(code));
+    };
+  });
+  document.getElementById('pref-c-clear').onclick=function(){tmpSel.length=0;chips.querySelectorAll('.pref-chip').forEach(function(el){el.classList.remove('on')})};
+  document.getElementById('pref-c-save').onclick=function(){PREF_C=tmpSel.slice();savePrefC();closeM('m-pref-c');iRec();toast('偏好已儲存 ✓')};
+  document.getElementById('pref-c-x').onclick=function(){closeM('m-pref-c')};
+  openM('m-pref-c');
+}
+
 var RC='JP';
 function iRec(){
+  // 只顯示有文章且符合偏好的國家
+  var recAll=COUNTRIES.filter(function(c){return ARTICLES[c.c]&&ARTICLES[c.c].length});
+  var shown=PREF_C.length?recAll.filter(function(c){return PREF_C.includes(c.c)}):recAll;
+  if(!shown.length)shown=recAll; // 偏好國家都無資料時 fallback 全部
+  if(!shown.find(function(c){return c.c===RC}))RC=shown[0].c; // 確保 RC 有效
   var bar=document.getElementById('cbar');
-  bar.innerHTML=COUNTRIES.map(function(c){return'<div class="ctag'+(c.c===RC?' on':'')+'" data-c="'+c.c+'">'+c.f+' '+c.n+'</div>'}).join('');
+  bar.innerHTML=shown.map(function(c){return'<div class="ctag'+(c.c===RC?' on':'')+'" data-c="'+c.c+'">'+c.f+' '+c.n+'</div>'}).join('');
   bar.querySelectorAll('.ctag').forEach(function(el){el.onclick=function(){RC=el.dataset.c;iRec()}});
   var list=document.getElementById('rec-list');
-  var arts=ARTICLES[RC]||[];
+  var arts=dailyShuffle(ARTICLES[RC]||[]);
   if(!arts.length){list.innerHTML='<div class="empty"><div class="empty-ico">🔍</div><div class="empty-t">尚無內容</div><div class="empty-s">即將推出更多目的地</div></div>';return}
   list.innerHTML=arts.map(function(a){
-    return'<div class="rc"><div class="rc-img" style="background:'+a.bg+'"></div><div class="rc-body"><div class="rc-src">'+a.src+'</div><div class="rc-ttl">'+a.t+'</div><div class="rc-tags">'+a.tags.map(function(t){return'<span class="rc-tag">'+t+'</span>'}).join('')+'</div></div></div>';
+    var imgSt=a.img?'background:'+a.bg+';background-image:url('+a.img+')':'background:'+a.bg;
+    return'<div class="rc"'+(a.url?' data-url="'+a.url+'" style="cursor:pointer" title="前往原文 ↗"':'')+' ><div class="rc-img" style="'+imgSt+'"></div><div class="rc-body"><div class="rc-src">'+a.src+(a.url?' <span style="font-size:10px;opacity:.6">↗</span>':'')+'</div><div class="rc-ttl">'+a.t+'</div><div class="rc-tags">'+a.tags.map(function(t){return'<span class="rc-tag">'+t+'</span>'}).join('')+'</div></div></div>';
   }).join('');
+  list.querySelectorAll('.rc[data-url]').forEach(function(el){el.onclick=function(){window.open(el.dataset.url,'_blank')}});
 }
 
 // ════ TRIPS ════════════════════════════════════════════════════
@@ -933,7 +1040,11 @@ function tripCardHTML(t){
     +(past?'<div class="past-badge-outer">已完成</div>':'')
     +'<div class="tc-cover">'+slots+'<div class="tc-ov"></div><div class="tc-txt"><div class="tc-name">'+dests+' '+t.name+'</div><div class="tc-date">'+fmtDate(t.startDate)+' – '+fmtDate(t.endDate)+(total?' · '+total+'天':'')+'</div></div></div>'
     +'<div class="tc-foot"><span class="tc-lbl">'+done+'/'+total+' 天</span><div class="tc-prog"><div class="tc-fill" style="width:'+pct+'%"></div></div><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2.5l4 4.5-4 4.5" stroke="#9E8270" stroke-width="1.4" stroke-linecap="round"/></svg></div>'
-    +'<div class="tc-actions"><div class="tc-btn tc-btn-edit" data-id="'+t.id+'">✏️ 編輯</div><div class="tc-btn tc-btn-copy" data-id="'+t.id+'">⎘ 複製</div><div class="tc-btn tc-btn-flt" data-id="'+t.id+'" style="color:var(--sky)">✈️ 機票</div><div class="tc-btn tc-btn-png" data-id="'+t.id+'">🖼 匯出</div><div class="tc-btn tc-btn-del" data-id="'+t.id+'" style="color:var(--rose)">🗑 刪除</div></div></div>';
+    +(function(){
+      var dests=t.destinations||[];
+      var isDomestic=dests.length>0&&dests.every(function(c){return c==='TW'});
+      return'<div class="tc-actions"><div class="tc-btn tc-btn-edit" data-id="'+t.id+'">✏️ 編輯</div><div class="tc-btn tc-btn-copy" data-id="'+t.id+'">⎘ 複製</div>'+(isDomestic?'':'<div class="tc-btn tc-btn-flt" data-id="'+t.id+'" style="color:var(--sky)">✈️ 機票</div>')+'<div class="tc-btn tc-btn-png" data-id="'+t.id+'">🖼 匯出</div><div class="tc-btn tc-btn-del" data-id="'+t.id+'" style="color:var(--rose)">🗑 刪除</div></div></div>';
+    })();
 }
 
 // ════ EXPORT PNG ═══════════════════════════════════════════════
@@ -1134,6 +1245,8 @@ function openEvModal(eid,defaultStart){
   document.getElementById('ev-st').value=EDAT.startTime||'';document.getElementById('ev-et').value=EDAT.endTime||'';
   document.getElementById('ev-desc').value=EDAT.description||'';document.getElementById('ev-addr').value=EDAT.address||'';
   document.getElementById('ev-journal').value=EDAT.journal||'';
+  document.getElementById('ev-led-desc').value='';document.getElementById('ev-led-amt').value='';
+  document.getElementById('ev-lurl').value='';document.getElementById('ev-llbl').value='';
   rLedCurToggle();rEvPhotos();rEvLinks();rEvMoods();rEvLedger();rGmap();
   document.querySelectorAll('.ev-tab').forEach(function(el){el.onclick=function(){document.querySelectorAll('.ev-tab').forEach(function(t){t.classList.remove('on')});document.querySelectorAll('.ev-panel').forEach(function(p){p.classList.add('hide')});el.classList.add('on');document.getElementById('ep-'+el.dataset.p).classList.remove('hide')}});
   document.querySelectorAll('.ev-tab').forEach(function(t){t.classList.remove('on')});document.querySelector('.ev-tab[data-p="info"]').classList.add('on');
@@ -1209,7 +1322,9 @@ function iProfile(){
   document.getElementById('p-export-all').onclick=function(){dlBlob(JSON.stringify(exportAll(),null,2),'journi-all-'+toDateStr(new Date())+'.json','application/json');toast('所有計畫已匯出 ✓')};
   document.getElementById('p-import').onclick=function(){document.getElementById('imp-inp').click()};
   document.getElementById('imp-inp').onchange=function(){var f=this.files[0];if(!f)return;var fr=new FileReader();fr.onload=function(ev){try{var d=JSON.parse(ev.target.result);if(d.trips){d.trips.forEach(function(t){importTrip(t)});toast('匯入 '+d.trips.length+' 個計畫 ✓')}else{importTrip(d);toast('計畫匯入成功 ✓')}iTrips()}catch(e){toast('匯入失敗，請確認檔案格式')}};fr.readAsText(f);this.value=''};
-  ['p-pref-c','p-pref-s'].forEach(function(id){document.getElementById(id).onclick=function(){toast('此功能即將推出')}});
+  document.getElementById('p-pref-c').onclick=openPrefC;
+  rPrefCSv(); // 顯示已存的偏好國家數
+  document.getElementById('p-pref-s').onclick=function(){toast('此功能即將推出')};
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -1510,7 +1625,7 @@ function fltCardHTML(f){
     +'<div class="flt-card-ap"><div class="flt-card-time">'+arrTime+'</div><div class="flt-card-code">'+f.to.airport+'</div></div>'
     +'</div>'
     +retHtml
-    +'<div class="flt-card-price">'+(isRT?'來回 ':'單程 ')+'NT$ '+f.price.toLocaleString()+'<span> /'+FLT_PARAMS.pax+'人'+paxNote+'</span></div>'
+    +'<div class="flt-card-price">'+(isRT?'來回 ':'單程 ')+'NT$ '+f.price.toLocaleString()+'<span> /'+FLT_PARAMS.pax+'人'+paxNote+'</span><span class="flt-ref-note"> (參考票價)</span></div>'
     +'<div class="flt-card-acts">'
     +'<div class="flt-card-btn-add" data-fid="'+f.id+'">＋ 加入行程</div>'
     +'<button class="flt-card-btn-view" data-fid="'+f.id+'">詳情 / 訂票 ↗</button>'
