@@ -1512,38 +1512,56 @@ function iProfile(){
 
 // ── 城市 / 機場資料庫 ──────────────────────────────────────────
 var FLT_CITY_DB=[
-  {id:'osaka',name:'大阪',flag:'🇯🇵',countries:['JP'],airports:[{code:'KIX',name:'關西國際機場'}]},
-  {id:'tokyo',name:'東京',flag:'🇯🇵',countries:['JP'],airports:[{code:'NRT',name:'成田國際機場'},{code:'HND',name:'羽田機場'}]},
-  {id:'sapporo',name:'札幌',flag:'🇯🇵',countries:['JP'],airports:[{code:'CTS',name:'新千歲機場'}]},
-  {id:'fukuoka',name:'福岡',flag:'🇯🇵',countries:['JP'],airports:[{code:'FUK',name:'福岡機場'}]},
-  {id:'naha',name:'沖繩',flag:'🇯🇵',countries:['JP'],airports:[{code:'OKA',name:'那霸機場'}]},
-  {id:'nagoya',name:'名古屋',flag:'🇯🇵',countries:['JP'],airports:[{code:'NGO',name:'中部國際機場'}]},
-  {id:'seoul',name:'首爾',flag:'🇰🇷',countries:['KR'],airports:[{code:'ICN',name:'仁川國際機場'},{code:'GMP',name:'金浦機場'}]},
-  {id:'busan',name:'釜山',flag:'🇰🇷',countries:['KR'],airports:[{code:'PUS',name:'金海國際機場'}]},
-  {id:'bangkok',name:'曼谷',flag:'🇹🇭',countries:['TH'],airports:[{code:'BKK',name:'素萬那普機場'},{code:'DMK',name:'廊曼機場'}]},
-  {id:'chiangmai',name:'清邁',flag:'🇹🇭',countries:['TH'],airports:[{code:'CNX',name:'清邁機場'}]},
-  {id:'singapore',name:'新加坡',flag:'🇸🇬',countries:['SG'],airports:[{code:'SIN',name:'樟宜機場'}]},
-  {id:'hongkong',name:'香港',flag:'🇭🇰',countries:['HK'],airports:[{code:'HKG',name:'香港國際機場'}]},
-  {id:'london',name:'倫敦',flag:'🇬🇧',countries:['GB'],airports:[{code:'LHR',name:'希斯洛機場'},{code:'LGW',name:'蓋威克機場'}]},
-  {id:'paris',name:'巴黎',flag:'🇫🇷',countries:['FR'],airports:[{code:'CDG',name:'戴高樂機場'},{code:'ORY',name:'奧利機場'}]},
-  {id:'newyork',name:'紐約',flag:'🇺🇸',countries:['US'],airports:[{code:'JFK',name:'甘迺迪機場'},{code:'EWR',name:'紐瓦克機場'}]},
-  {id:'losangeles',name:'洛杉磯',flag:'🇺🇸',countries:['US'],airports:[{code:'LAX',name:'洛杉磯國際機場'}]},
-  {id:'sydney',name:'雪梨',flag:'🇦🇺',countries:['AU'],airports:[{code:'SYD',name:'金斯福德史密斯機場'}]},
-  {id:'hanoi',name:'河內',flag:'🇻🇳',countries:['VN'],airports:[{code:'HAN',name:'內排機場'}]},
-  {id:'hochiminhcity',name:'胡志明市',flag:'🇻🇳',countries:['VN'],airports:[{code:'SGN',name:'新山一機場'}]},
-  {id:'taipei',name:'台北',flag:'🇹🇼',countries:['TW'],airports:[{code:'TPE',name:'桃園國際機場'},{code:'TSA',name:'松山機場'}]},
-  {id:'kaohsiung',name:'高雄',flag:'🇹🇼',countries:['TW'],airports:[{code:'KHH',name:'高雄國際機場'}]},
-  {id:'macao',name:'澳門',flag:'🇲🇴',countries:['MO'],airports:[{code:'MFM',name:'澳門國際機場'}]},
+  // 日本
+  {id:'osaka',name:'大阪',flag:'🇯🇵',countries:['JP'],country:'日本',regions:['關西','近畿'],airports:[{code:'KIX',name:'關西國際機場'}]},
+  {id:'tokyo',name:'東京',flag:'🇯🇵',countries:['JP'],country:'日本',regions:['關東'],airports:[{code:'NRT',name:'成田國際機場'},{code:'HND',name:'羽田機場'}]},
+  {id:'sapporo',name:'札幌',flag:'🇯🇵',countries:['JP'],country:'日本',regions:['北海道','Hokkaido'],airports:[{code:'CTS',name:'新千歲機場'}]},
+  {id:'fukuoka',name:'福岡',flag:'🇯🇵',countries:['JP'],country:'日本',regions:['九州'],airports:[{code:'FUK',name:'福岡機場'}]},
+  {id:'naha',name:'沖繩',flag:'🇯🇵',countries:['JP'],country:'日本',regions:['琉球','Okinawa'],airports:[{code:'OKA',name:'那霸機場'}]},
+  {id:'nagoya',name:'名古屋',flag:'🇯🇵',countries:['JP'],country:'日本',regions:['中部','東海'],airports:[{code:'NGO',name:'中部國際機場'}]},
+  {id:'hiroshima',name:'廣島',flag:'🇯🇵',countries:['JP'],country:'日本',regions:['中國地方'],airports:[{code:'HIJ',name:'廣島機場'}]},
+  {id:'kagoshima',name:'鹿兒島',flag:'🇯🇵',countries:['JP'],country:'日本',regions:['九州'],airports:[{code:'KOJ',name:'鹿兒島機場'}]},
+  // 韓國
+  {id:'seoul',name:'首爾',flag:'🇰🇷',countries:['KR'],country:'韓國',regions:['首都圈','Korea'],airports:[{code:'ICN',name:'仁川國際機場'},{code:'GMP',name:'金浦機場'}]},
+  {id:'busan',name:'釜山',flag:'🇰🇷',countries:['KR'],country:'韓國',regions:['慶尚'],airports:[{code:'PUS',name:'金海國際機場'}]},
+  {id:'jeju',name:'濟州',flag:'🇰🇷',countries:['KR'],country:'韓國',regions:['濟州島'],airports:[{code:'CJU',name:'濟州國際機場'}]},
+  // 泰國
+  {id:'bangkok',name:'曼谷',flag:'🇹🇭',countries:['TH'],country:'泰國',regions:['中部'],airports:[{code:'BKK',name:'素萬那普機場'},{code:'DMK',name:'廊曼機場'}]},
+  {id:'chiangmai',name:'清邁',flag:'🇹🇭',countries:['TH'],country:'泰國',regions:['北部'],airports:[{code:'CNX',name:'清邁機場'}]},
+  {id:'phuket',name:'普吉',flag:'🇹🇭',countries:['TH'],country:'泰國',regions:['南部'],airports:[{code:'HKT',name:'普吉國際機場'}]},
+  // 新加坡
+  {id:'singapore',name:'新加坡',flag:'🇸🇬',countries:['SG'],country:'新加坡',regions:[],airports:[{code:'SIN',name:'樟宜機場'}]},
+  // 香港
+  {id:'hongkong',name:'香港',flag:'🇭🇰',countries:['HK'],country:'香港',regions:[],airports:[{code:'HKG',name:'香港國際機場'}]},
+  // 越南
+  {id:'hanoi',name:'河內',flag:'🇻🇳',countries:['VN'],country:'越南',regions:['北部'],airports:[{code:'HAN',name:'內排機場'}]},
+  {id:'hochiminhcity',name:'胡志明市',flag:'🇻🇳',countries:['VN'],country:'越南',regions:['南部'],airports:[{code:'SGN',name:'新山一機場'}]},
+  {id:'danang',name:'峴港',flag:'🇻🇳',countries:['VN'],country:'越南',regions:['中部'],airports:[{code:'DAD',name:'峴港機場'}]},
+  // 台灣
+  {id:'taipei',name:'台北',flag:'🇹🇼',countries:['TW'],country:'台灣',regions:[],airports:[{code:'TPE',name:'桃園國際機場'},{code:'TSA',name:'松山機場'}]},
+  {id:'kaohsiung',name:'高雄',flag:'🇹🇼',countries:['TW'],country:'台灣',regions:[],airports:[{code:'KHH',name:'高雄國際機場'}]},
+  // 澳門
+  {id:'macao',name:'澳門',flag:'🇲🇴',countries:['MO'],country:'澳門',regions:[],airports:[{code:'MFM',name:'澳門國際機場'}]},
+  // 歐美澳
+  {id:'london',name:'倫敦',flag:'🇬🇧',countries:['GB'],country:'英國',regions:['England'],airports:[{code:'LHR',name:'希斯洛機場'},{code:'LGW',name:'蓋威克機場'}]},
+  {id:'paris',name:'巴黎',flag:'🇫🇷',countries:['FR'],country:'法國',regions:[],airports:[{code:'CDG',name:'戴高樂機場'},{code:'ORY',name:'奧利機場'}]},
+  {id:'newyork',name:'紐約',flag:'🇺🇸',countries:['US'],country:'美國',regions:['East Coast'],airports:[{code:'JFK',name:'甘迺迪機場'},{code:'EWR',name:'紐瓦克機場'}]},
+  {id:'losangeles',name:'洛杉磯',flag:'🇺🇸',countries:['US'],country:'美國',regions:['West Coast'],airports:[{code:'LAX',name:'洛杉磯國際機場'}]},
+  {id:'sydney',name:'雪梨',flag:'🇦🇺',countries:['AU'],country:'澳洲',regions:[],airports:[{code:'SYD',name:'金斯福德史密斯機場'}]},
 ];
 
-// 搜尋城市（支援中英文 + 機場代碼）
+// 搜尋城市（支援國家名、地區別名、城市名、英文、機場代碼）
 function searchCities(q){
   if(!q)return FLT_CITY_DB;
-  var lq=q.toLowerCase();
+  var lq=q.toLowerCase().trim();
   return FLT_CITY_DB.filter(function(c){
     if(c.name.includes(q))return true;
-    if(c.id.includes(lq))return true;
-    return c.airports.some(function(a){return a.code.toLowerCase().includes(lq)||a.name.includes(q)});
+    if(c.id.toLowerCase().includes(lq))return true;
+    if(c.country&&c.country.includes(q))return true;
+    if(c.regions&&c.regions.some(function(r){return r.toLowerCase().includes(lq)}))return true;
+    return c.airports.some(function(a){
+      return a.code.toLowerCase().includes(lq)||a.name.includes(q);
+    });
   });
 }
 
@@ -1555,7 +1573,7 @@ var FLT_CITY_MODE='to';   // 選哪一端
 
 // 模擬航班資料生成器
 var AIRLINES=['長榮航空','中華航空','星宇航空','台灣虎航','酷航','樂桃航空','全日空'];
-function genFlights(from,to,dep,pax){
+function genFlights(from,to,dep,ret,pax,tripType){
   var base=[7800,8200,9500,11000,12800,14500,18000];
   var results=[];
   for(var i=0;i<8;i++){
@@ -1565,20 +1583,36 @@ function genFlights(from,to,dep,pax){
     var dur=90+Math.floor(Math.random()*150);
     var arrM=dh*60+dm+dur;
     var arrH=String(Math.floor(arrM/60)%24).padStart(2,'0')+':'+String(arrM%60).padStart(2,'0');
-    var price=Math.round((base[i%base.length]+Math.random()*2000-1000)/100)*100;
+    // 來回票價 = 單程 * 1.8（模擬來回有折扣）
+    var onewayPrice=Math.round((base[i%base.length]+Math.random()*2000-1000)/100)*100;
+    var pricePerPax=tripType==='roundtrip'?Math.round(onewayPrice*1.8/100)*100:onewayPrice;
+    var totalPrice=pricePerPax*pax;
     var airline=AIRLINES[i%AIRLINES.length];
+    // 回程資訊（來回票才有）
+    var retDepart=null,retArrive=null,retDur=null;
+    if(tripType==='roundtrip'&&ret){
+      var rdh=10+Math.floor(Math.random()*6);
+      var rdm=Math.floor(Math.random()*60);
+      retDur=90+Math.floor(Math.random()*150);
+      var rarrM=rdh*60+rdm+retDur;
+      retDepart=ret+'T'+String(rdh).padStart(2,'0')+':'+String(rdm).padStart(2,'0');
+      retArrive=ret+'T'+String(Math.floor(rarrM/60)%24).padStart(2,'0')+':'+String(rarrM%60).padStart(2,'0');
+    }
     results.push({
       id:'flt_'+uid(),
       type:'transport',subtype:'flight',
+      tripType:tripType,
       from:{city:from.city,airport:from.airport},
       to:{city:to.city,airport:to.airport},
       depart_time:dep+'T'+depH,
       arrive_time:dep+'T'+arrH,
+      ret_depart_time:retDepart,
+      ret_arrive_time:retArrive,
       airline:airline,
-      price:price*pax,
-      pricePerPax:price,
+      price:totalPrice,
+      pricePerPax:pricePerPax,
       durationMin:dur,
-      booking_link:'https://www.google.com/travel/flights?q='+encodeURIComponent(from.airport+' to '+to.airport+' '+dep),
+      retDurationMin:retDur,
       source:'simulated'
     });
   }
@@ -1618,8 +1652,8 @@ function openFltSheet(prefill){
     FLT_TO=tmp?{city:tmp.city,airport:tmp.airport,airportName:tmp.airportName}:null;
     rFltRouteFields();
   };
-  // Google Flights 直連
-  document.getElementById('flt-gf-link').onclick=function(){openGoogleFlights()};
+  // Google Flights 直連 — 移除，改由結果頁「查看」按鈕導出
+  // document.getElementById('flt-gf-link').onclick = ...
   // 查詢
   document.getElementById('flt-search-btn').onclick=doFltSearch;
 
@@ -1687,16 +1721,22 @@ function doFltSearch(){
   if(FLT_TYPE==='roundtrip'&&!ret){toast('請選擇回程日期，或切換為單程');return}
 
   FLT_PARAMS={from:FLT_FROM,to:FLT_TO,dep:dep,ret:ret,pax:pax,type:FLT_TYPE};
-  FLT_RESULTS=genFlights(FLT_FROM,FLT_TO,dep,pax);
+  FLT_RESULTS=genFlights(FLT_FROM,FLT_TO,dep,ret,pax,FLT_TYPE);
   FLT_SHOWN=5;
   closeM('m-flt');
   setTimeout(function(){go('flt-result',FLT_PARAMS)},120);
 }
 
-function openGoogleFlights(){
-  var to=FLT_TO?FLT_TO.airport:'';
-  var dep=document.getElementById('flt-dep').value;
-  var url='https://www.google.com/travel/flights?q='+encodeURIComponent(FLT_FROM.airport+' to '+to+(dep?' '+dep:''));
+function openGoogleFlights(f){
+  // 依航班資料與票種組出對應 Google Flights URL
+  var type=f?f.tripType:FLT_TYPE;
+  var from=f?f.from.airport:(FLT_FROM?FLT_FROM.airport:'KHH');
+  var to=f?f.to.airport:(FLT_TO?FLT_TO.airport:'');
+  var dep=f?(f.depart_time||'').split('T')[0]:(FLT_PARAMS.dep||'');
+  var ret=f?(f.ret_depart_time||'').split('T')[0]:(FLT_PARAMS.ret||'');
+  // tfs=1 單程, tfs=2 來回
+  var tfs=type==='oneway'?1:2;
+  var url='https://www.google.com/travel/flights?tfs='+tfs+'&q='+encodeURIComponent(from+' to '+to+(dep?' '+dep:'')+(type==='roundtrip'&&ret?' '+ret:''));
   window.open(url,'_blank');
 }
 
@@ -1750,26 +1790,122 @@ function renderFltCards(list){
     el.onclick=function(){openFltAddModal(fid)};
   });
   cards.querySelectorAll('.flt-card-btn-view').forEach(function(el){
-    var url=el.dataset.url;
-    el.onclick=function(){window.open(url,'_blank')};
+    var fid=el.dataset.fid;
+    el.onclick=function(){
+      var f=FLT_RESULTS.find(function(x){return x.id===fid});
+      if(f)openGoogleFlights(f);
+    };
   });
 }
 function fltCardHTML(f){
   var depTime=f.depart_time?f.depart_time.split('T')[1]:'--:--';
   var arrTime=f.arrive_time?f.arrive_time.split('T')[1]:'--:--';
   var dur=f.durationMin?Math.floor(f.durationMin/60)+'h '+(f.durationMin%60)+'m':'';
-  var gfUrl='https://www.google.com/travel/flights?q='+encodeURIComponent((f.from?f.from.airport:'KHH')+' to '+(f.to?f.to.airport:'')+' '+(f.depart_time||'').split('T')[0]);
+  var isRT=f.tripType==='roundtrip';
+  // 回程資訊
+  var retSection='';
+  if(isRT&&f.ret_depart_time){
+    var retDepTime=f.ret_depart_time.split('T')[1];
+    var retArrTime=f.ret_arrive_time?f.ret_arrive_time.split('T')[1]:'--:--';
+    var retDur=f.retDurationMin?Math.floor(f.retDurationMin/60)+'h '+(f.retDurationMin%60)+'m':'';
+    retSection='<div style="margin:6px 8px 0;padding:6px 0 0;border-top:1px dashed var(--cream3);font-size:10px;color:var(--ink3)">回程</div>'
+      +'<div class="flt-card-route" style="opacity:.85">'
+      +'<div class="flt-card-ap"><div class="flt-card-time" style="font-size:15px">'+retDepTime+'</div><div class="flt-card-code">'+f.to.airport+'</div></div>'
+      +'<div class="flt-card-mid"><div class="flt-card-dur">'+retDur+'</div><div class="flt-card-line" style="transform:scaleX(-1)"></div></div>'
+      +'<div class="flt-card-ap"><div class="flt-card-time" style="font-size:15px">'+retArrTime+'</div><div class="flt-card-code">'+f.from.airport+'</div></div>'
+      +'</div>';
+  }
+  var priceLbl=isRT?'來回 NT$ ':'單程 NT$ ';
+  var paxNote=' /'+FLT_PARAMS.pax+'人'+(FLT_PARAMS.pax>1?' (每人 NT
+
+// ── 加入行程 Modal ────────────────────────────────────────────
+var FLT_SEL_FLIGHT=null,FLT_SEL_TRIP=null;
+function openFltAddModal(fid){
+  FLT_SEL_FLIGHT=FLT_RESULTS.find(function(f){return f.id===fid});
+  if(!FLT_SEL_FLIGHT)return;
+  FLT_SEL_TRIP=null;
+  var f=FLT_SEL_FLIGHT;
+  var depTime=f.depart_time?f.depart_time.split('T')[1]:'';
+  var arrTime=f.arrive_time?f.arrive_time.split('T')[1]:'';
+  document.getElementById('flt-add-sub').textContent=f.airline+' · '+depTime+' → '+arrTime+'  NT$'+f.price.toLocaleString();
+
+  var trips=getIndex();
+  var list=document.getElementById('trip-sel-list');
+  if(!trips.length){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--ink3);font-size:13px">尚無行程計畫，請先建立計畫</div>';document.getElementById('flt-add-ok').style.display='none';openM('m-flt-add');return}
+  document.getElementById('flt-add-ok').style.display='';
+  list.innerHTML=trips.map(function(t){
+    return'<div class="trip-sel-item" data-tid="'+t.id+'">'
+      +'<div class="trip-sel-name">'+(t.destinations||[]).map(function(c){var x=COUNTRIES.find(function(k){return k.c===c});return x?x.f:''}).join(' ')+' '+t.name+'</div>'
+      +'<div class="trip-sel-date">'+fmtDate(t.startDate)+' – '+fmtDate(t.endDate)+'</div>'
+      +'</div>';
+  }).join('');
+  list.querySelectorAll('.trip-sel-item').forEach(function(el){
+    el.onclick=function(){
+      list.querySelectorAll('.trip-sel-item').forEach(function(x){x.classList.remove('on')});
+      el.classList.add('on');FLT_SEL_TRIP=el.dataset.tid;
+    };
+  });
+  document.getElementById('flt-add-ok').onclick=confirmFltAdd;
+  openM('m-flt-add');
+}
+function confirmFltAdd(){
+  if(!FLT_SEL_TRIP){toast('請選擇要加入的行程');return}
+  if(!FLT_SEL_FLIGHT){closeM('m-flt-add');return}
+  var f=FLT_SEL_FLIGHT,tid=FLT_SEL_TRIP;
+  var days=getDays(tid);if(!days.length){toast('此行程無天數');return}
+  var day1=days[0];
+  // 解析出發時間
+  var depParts=f.depart_time?f.depart_time.split('T'):['',''];
+  var arrParts=f.arrive_time?f.arrive_time.split('T'):['',''];
+  var evData={
+    title:'✈️ '+f.from.city+' → '+f.to.city,
+    category:'transport',
+    startTime:depParts[1]||'',
+    endTime:arrParts[1]||'',
+    address:f.from.airport+' → '+f.to.airport,
+    description:f.airline+'  NT$ '+f.price.toLocaleString()+(f.booking_link?'\n'+f.booking_link:''),
+    links:f.booking_link?[{url:f.booking_link,label:'訂票連結 (Google Flights)'}]:[],
+    tags:['flight'],
+    status:'planned',
+    images:[],
+    ledger:[{desc:f.airline+' 機票',amt:String(f.price),cur:'TWD'}],
+  };
+  createEv(tid,day1.id,evData);
+  closeM('m-flt-add');
+  toast('✈️ 已加入「'+getTrip(tid).name+'」Day 1 ✓',3000);
+}
+
+// ════ BOOT ═════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('.ni').forEach(function(el){
+    el.addEventListener('click',function(){
+      var s=el.dataset.s;
+      if(s==='add'){iAP(null);return}
+      if(s==='flight'){openFltSheet();return}
+      go(s);
+    });
+  });
+  document.getElementById('confirm-cancel').onclick=function(){document.getElementById('confirm-overlay').classList.remove('show');_confirmCb=null};
+  document.getElementById('confirm-ok').onclick=function(){document.getElementById('confirm-overlay').classList.remove('show');if(_confirmCb)_confirmCb();_confirmCb=null};
+  if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});
+  go('rec',{},false);
+});
+</script>
+</body>
+</html>
++f.pricePerPax.toLocaleString()+')':'');
   return'<div class="flt-card">'
-    +'<div class="flt-card-airline">'+f.airline+'</div>'
+    +'<div class="flt-card-airline">'+f.airline+(isRT?' · 來回票':' · 單程票')+'</div>'
     +'<div class="flt-card-route">'
-    +'<div class="flt-card-ap"><div class="flt-card-time">'+depTime+'</div><div class="flt-card-code">'+(f.from?f.from.airport:'KHH')+'</div></div>'
+    +'<div class="flt-card-ap"><div class="flt-card-time">'+depTime+'</div><div class="flt-card-code">'+f.from.airport+'</div></div>'
     +'<div class="flt-card-mid"><div class="flt-card-dur">'+dur+'</div><div class="flt-card-line"></div></div>'
-    +'<div class="flt-card-ap"><div class="flt-card-time">'+arrTime+'</div><div class="flt-card-code">'+(f.to?f.to.airport:'')+'</div></div>'
+    +'<div class="flt-card-ap"><div class="flt-card-time">'+arrTime+'</div><div class="flt-card-code">'+f.to.airport+'</div></div>'
     +'</div>'
-    +'<div class="flt-card-price">NT$ '+f.price.toLocaleString()+'<span> /'+FLT_PARAMS.pax+'人</span></div>'
+    +retSection
+    +'<div class="flt-card-price">'+priceLbl+f.price.toLocaleString()+'<span>'+paxNote+'</span></div>'
     +'<div class="flt-card-acts">'
     +'<div class="flt-card-btn-add" data-fid="'+f.id+'">＋ 加入行程</div>'
-    +'<button class="flt-card-btn-view" data-url="'+gfUrl+'">查看 ↗</button>'
+    +'<button class="flt-card-btn-view" data-fid="'+f.id+'">詳情 / 訂票 ↗</button>'
     +'</div></div>';
 }
 
