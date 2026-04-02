@@ -1386,15 +1386,16 @@ function doFltSearch(){
   setTimeout(function(){go('flt-result',FLT_PARAMS)},120);
 }
 
-// 組 Google Flights URL（依票種正確帶參數）
+// 組 Google Flights URL（#flt= fragment 格式，可直接帶入查詢結果）
 function buildGFUrl(f){
   var isRT=f.tripType==='roundtrip';
   var fromCode=f.from?f.from.airport:'KHH',toCode=f.to?f.to.airport:'';
   var depDate=(f.depart_time||'').split('T')[0];
   var retDate=isRT&&f.ret_depart_time?(f.ret_depart_time||'').split('T')[0]:'';
-  // Google Flights deep link格式
-  var url='https://www.google.com/travel/flights?hl=zh-TW&q=flights+from+'+encodeURIComponent(fromCode)+'+to+'+encodeURIComponent(toCode)+(depDate?'+'+depDate:'')+(isRT&&retDate?'+'+retDate:'')+(isRT?'':'&trip=oneway');
-  return url;
+  var pax=FLT_PARAMS.pax||1;
+  var flt=fromCode+'.'+toCode+'.'+depDate;
+  if(isRT&&retDate)flt+='*'+toCode+'.'+fromCode+'.'+retDate;
+  return 'https://www.google.com/travel/flights?hl=zh-TW#flt='+flt+';c:TWD;e:'+pax+';sd:1;t:f';
 }
 
 // ── 結果頁 ────────────────────────────────────────────────────
