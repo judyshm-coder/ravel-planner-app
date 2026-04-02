@@ -1386,16 +1386,60 @@ function doFltSearch(){
   setTimeout(function(){go('flt-result',FLT_PARAMS)},120);
 }
 
-// 組 Google Flights URL（#flt= fragment 格式，可直接帶入查詢結果）
+// 組 Google Flights URL（protobuf tfs 格式，直接帶入搜尋結果）
+// 逆向工程自真實 Google Flights URL，完整還原 field 結構
+// 關鍵：台灣機場需用 Google 城市實體 ID（type=2），否則無法識別
+var GF_ENTITY={
+  'KHH':'/m/04bnx', // 高雄
+  'TPE':'/m/02616', // 台北/桃園
+  'TSA':'/m/0hc3y', // 松山
+  'RMQ':'/m/0mzck', // 台中
+  'TNN':'/m/04_d8l' // 台南
+};
+function encodeTfs(fromCode,toCode,depDate,retDate,pax,isRT){
+  // ── protobuf 基礎編碼 ──────────────────────────
+  function vi(n){
+    var o=[],v=n>>>0;
+    while(v>127){o.push((v&0x7F)|0x80);v=v>>>7;}
+    o.push(v);return o;
+  }
+  function str(s){var b=[];for(var i=0;i<s.length;i++)b.push(s.charCodeAt(i));return b;}
+  function fvi(f,v){return vi((f<<3)|0).concat(vi(v));}
+  function fld(f,d){return vi((f<<3)|2).concat(vi(d.length)).concat(d);}
+  // ── 地點子訊息：有 entity ID 用 type=2，否則用 type=1(IATA) ──
+  function loc(code){
+    var eid=GF_ENTITY[code];
+    if(eid) return fvi(1,2).concat(fld(2,str(eid))); // 城市實體
+    return fvi(1,1).concat(fld(2,str(code)));         // IATA 機場碼
+  }
+  function leg(date,orig,dest){
+    return fld(2,str(date)).concat(fld(13,loc(orig))).concat(fld(14,loc(dest)));
+  }
+  // ── 外層訊息（完整欄位，對應真實 URL）─────────
+  var msg=fvi(1,28)                   // mode=28 (flights)
+    .concat(fvi(2,isRT?2:1))          // 2=來回 / 1=單程
+    .concat(fld(3,leg(depDate,fromCode,toCode)));    // 去程
+  if(isRT&&retDate)
+    msg=msg.concat(fld(3,leg(retDate,toCode,fromCode))); // 回程
+  msg=msg
+    .concat(fvi(8,1))                 // stops=任意
+    .concat(fvi(9,pax))               // 旅客人數
+    .concat(fvi(14,1))                // 艙等=經濟艙
+    .concat(fld(16,[0x08,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0x01])) // 任意價格
+    .concat(fvi(19,1));               // 排序=最佳
+  // ── Base64url 編碼 ────────────────────────────
+  var bin='';
+  for(var i=0;i<msg.length;i++)bin+=String.fromCharCode(msg[i]);
+  return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
+}
 function buildGFUrl(f){
   var isRT=f.tripType==='roundtrip';
   var fromCode=f.from?f.from.airport:'KHH',toCode=f.to?f.to.airport:'';
   var depDate=(f.depart_time||'').split('T')[0];
   var retDate=isRT&&f.ret_depart_time?(f.ret_depart_time||'').split('T')[0]:'';
   var pax=FLT_PARAMS.pax||1;
-  var flt=fromCode+'.'+toCode+'.'+depDate;
-  if(isRT&&retDate)flt+='*'+toCode+'.'+fromCode+'.'+retDate;
-  return 'https://www.google.com/travel/flights?hl=zh-TW#flt='+flt+';c:TWD;e:'+pax+';sd:1;t:f';
+  var tfs=encodeTfs(fromCode,toCode,depDate,retDate,pax,isRT);
+  return 'https://www.google.com/travel/flights/search?tfs='+tfs+'&hl=zh-TW';
 }
 
 // ── 結果頁 ────────────────────────────────────────────────────
